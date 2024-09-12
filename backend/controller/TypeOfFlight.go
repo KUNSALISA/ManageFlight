@@ -25,7 +25,7 @@ func GetTypeOfFlight(c *gin.Context) {
 	var types []entity.TypeOfFlight
 	db := entity.DB()
 
-	results := db.Select("id, TypeFlight").Find(&types)
+	results := db.Select("*").Find(&types)
 	if results.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 		return
