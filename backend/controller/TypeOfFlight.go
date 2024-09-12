@@ -23,11 +23,14 @@ import (
 
 func GetTypeOfFlight(c *gin.Context) {
 	var types []entity.TypeOfFlight
-	if err := entity.DB().Raw("SELECT * FROM TypeOfFlight").Find(&types).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	db := entity.DB()
+
+	results := db.Select("id, TypeFlight").Find(&types)
+	if results.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": types})
+	c.JSON(http.StatusOK, types)
 }
 
 // GetAirlineByID - ฟังก์ชันสำหรับดึงข้อมูลสายการบิน ID
