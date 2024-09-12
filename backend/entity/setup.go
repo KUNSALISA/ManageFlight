@@ -105,7 +105,7 @@ func SetupDatabase() {
 	db.First(&flyingFrom, "airport_name = ?", "Suvarnabhumi Airport")
 	db.First(&goingTo, "airport_name = ?", "Don Mueang International Airport")
 	// ค้นหาประเภทเที่ยวบิน
-	db.First(&flightType, "type_name = ?", "Departures")
+	db.First(&flightType, "type_flight = ?", "Departures") //!!!!!!!!ทำไมเป็น 0 แก้ด้วย
 
 	Details := []FlightDetails{
 		{
@@ -136,6 +136,25 @@ func SetupDatabase() {
 	for _, flightDetail := range Details {
 		db.FirstOrCreate(&flightDetail, FlightDetails{FlightCode: flightDetail.FlightCode})
 	}
+
+	//db.First() หรือ db.Where() เพื่อค้นหาข้อมูลที่มีอยู่ และใช้ db.Create() หรือ db.Save() เพื่อเพิ่มข้อมูลใหม่
+	var flight Flight
+	var flightDetail FlightDetails
+	var admin Admin
+
+	db.First(&flight, "flight_date = ?", time.Date(2023, 9, 10, 0, 0, 0, 0, time.UTC))
+	db.First(&flightDetail, "flight_code = ?", "AA102")
+	db.First(&admin, "email = ?", "Admin@gmail.com")
+
+	flightAndDetails := []FlightAndFlightDetails{
+		{
+			FlightID:       &flight.ID,
+			FlightDetailID: &flightDetail.ID,
+			AdminID:        &admin.ID,
+		},
+	}
+	for _, ffd := range flightAndDetails {
+		db.Create(&ffd) // เพิ่มข้อมูลลงในฐานข้อมูล
+	}
+
 }
-
-
