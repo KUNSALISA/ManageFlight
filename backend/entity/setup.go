@@ -92,8 +92,50 @@ func SetupDatabase() {
 		db.FirstOrCreate(&flight, Flight{FlightDate: flight.FlightDate})
 	}
 
-	
+	//add data to flightdetails
+	// ดึงข้อมูล Airline, Airport, และ TypeOfFlight ที่มีอยู่ในฐานข้อมูล
+	var airline Airline
+	var flyingFrom, goingTo Airport
+	var flightType TypeOfFlight
 
+	// ใช้คำสั่ง db.First() เพื่อดึงข้อมูล
+	// ค้นหาสายการบินที่ต้องการ
+	db.First(&airline, "airline_name = ?", "AirAsia")
+	// ค้นหาสนามบินต้นทางและปลายทาง
+	db.First(&flyingFrom, "airport_name = ?", "Suvarnabhumi Airport")
+	db.First(&goingTo, "airport_name = ?", "Don Mueang International Airport")
+	// ค้นหาประเภทเที่ยวบิน
+	db.First(&flightType, "type_name = ?", "Departures")
 
-
+	Details := []FlightDetails{
+		{
+			FlightCode:    "FD4113",
+			ScheduleStart: time.Date(2023, 9, 10, 8, 30, 0, 0, time.UTC),
+			ScheduleEnd:   time.Date(2023, 9, 10, 12, 30, 0, 0, time.UTC),
+			Hour:          4,
+			Cost:          100,
+			Point:         10,
+			AirlineID:     &airline.ID,
+			FlyingFromID:  &flyingFrom.ID,
+			GoingToID:     &goingTo.ID,
+			TypeID:        &flightType.ID,
+		},
+		{
+			FlightCode:    "AA102",
+			ScheduleStart: time.Date(2023, 10, 5, 9, 45, 0, 0, time.UTC),
+			ScheduleEnd:   time.Date(2023, 10, 5, 13, 45, 0, 0, time.UTC),
+			Hour:          4,
+			Cost:          150,
+			Point:         20,
+			AirlineID:     &airline.ID,
+			FlyingFromID:  &flyingFrom.ID,
+			GoingToID:     &goingTo.ID,
+			TypeID:        &flightType.ID,
+		},
+	}
+	for _, flightDetail := range Details {
+		db.FirstOrCreate(&flightDetail, FlightDetails{FlightCode: flightDetail.FlightCode})
+	}
 }
+
+
