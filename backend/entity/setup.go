@@ -31,11 +31,12 @@ func SetupDatabase() {
 	)
 	db = database
 
-	// TypeOfFlight := []entity.TypeOfFlight{
-	// 	{TypeFlight: "Departures "},
-	// 	{TypeFlight: "Domestic flight"},
-	// }
-	// for _, pkg := range TypeOfFlight {
-	// 	db.FirstOrCreate(&pkg, entity.TypeOfFlight{TypeFlight: pkg.TypeFlight})
-	// }
+	flightTypes := []TypeOfFlight{
+		{TypeFlight: "Departures"},
+		{TypeFlight: "Domestic flight"},
+	}
+	for _, flight := range flightTypes {
+		db.FirstOrCreate(&flight, TypeOfFlight{TypeFlight: flight.TypeFlight})
+	}
+	
 }
