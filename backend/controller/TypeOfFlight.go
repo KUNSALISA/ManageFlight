@@ -7,25 +7,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateCategories(c *gin.Context) {
-	var types entity.TypeOfFlight
+// func CreateTypeOfFlight(c *gin.Context) {
+// 	var types entity.TypeOfFlight
 
-	if err := c.ShouldBindJSON(&types); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	if err := entity.DB().Create(&types).Error; err != nil {
+// 	if err := c.ShouldBindJSON(&types); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	if err := entity.DB().Create(&types).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, gin.H{"data": types})
+// }
+
+func GetTypeOfFlight(c *gin.Context) {
+	var types []entity.TypeOfFlight
+	if err := entity.DB().Raw("SELECT * FROM TypeOfFlight").Find(&types).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": types})
 }
 
-func GetCategories(c *gin.Context) {
-	var categories []entity.TypeOfFlight
-	if err := entity.DB().Raw("SELECT * FROM categories").Find(&categories).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// GetAirlineByID - ฟังก์ชันสำหรับดึงข้อมูลสายการบิน ID
+func GetTypeOfFlightByID(c *gin.Context) {
+	var types entity.TypeOfFlight
+	id := c.Param("id")
+
+	// ดึงข้อมูลจากฐานข้อมูลตาม ID
+	if err := entity.DB().First(&types, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "TypeOfFlight not found"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": categories})
+
+	// ส่งข้อมูลกลับไปในรูป JSON
+	c.JSON(http.StatusOK, gin.H{"data": types})
 }

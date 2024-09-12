@@ -1,4 +1,5 @@
 package main
+
 import (
 	"github.com/KUNSALISA/ManageFlight/controller"
 	"github.com/KUNSALISA/ManageFlight/entity"
@@ -6,75 +7,59 @@ import (
 )
 
 const PORT = "8080"
+
 func main() {
 	entity.SetupDatabase()
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 	// User Routes
-	//All page
-	r.GET("/members", controller.ListMember)
-	r.GET("/member/:ID", controller.GetMember)
-	r.GET("/login/:username", controller.GetMemberByUsername)
-	r.PATCH("/members", controller.UpdateMember)
-	r.DELETE("/members/:id", controller.DeleteMember)
-	r.POST("/members", controller.CreateMember)
-	//Page.Login
-	r.POST("/login", controller.LoginByUsername)
-	//Page.publish
-	r.GET("/cartoon/:ID",controller.GetCartoonByID)
-	r.GET("/episodes/:ID",controller.GetEpisodeByID)
-	r.GET("/episode/:ID",controller.GetChapterByID)
-	r.POST("/episodes/:ID",controller.CreateEpisodes)
-	r.POST("/cartoons/:ID/:categoriesID",controller.CreateSeries)
-	//Page.paymentCoin
-	r.GET("/package", controller.PackageCoin)
-	r.GET("/package/:ID/:ID_package", controller.UpdateCoin)
-	//Page.Catagories
-	r.GET("/categories",controller.GetCategories)
-	r.GET("/cartoons/:ID",controller.GetCartoon)
-	
-	//Page.Dashboard
-	r.GET("/home",controller.GetCartoonToDashboard)
+	// //All page
+	// r.GET("/members", controller.ListMember)
+	// r.GET("/member/:ID", controller.GetMember)
+	// r.GET("/login/:username", controller.GetMemberByUsername)
+	// r.PATCH("/members", controller.UpdateMember)
+	// r.DELETE("/members/:id", controller.DeleteMember)
+	// r.POST("/members", controller.CreateMember)
+	// //Page.Login
+	// r.POST("/login", controller.LoginByUsername)
 
-	//Page.paymentEpisode
-	r.GET("/paymentEP/:member_ID/:ID_E", controller.CheckPaymentEP)
-	r.GET("PaymentEP/:member_ID/:ID_E",controller.UpdatePaymentEp)
+	//Page.flight
+	r.POST("/flights", controller.CreateFlight)
+	r.GET("/flights", controller.GetFlights)
+	r.GET("/flights/:id", controller.GetFlightByID)
+	r.PUT("/flights/:id", controller.UpdateFlight)
+	r.DELETE("/flights/:id", controller.DeleteFlight)
 
-	//Page.Comment
-    r.POST("/comments/:ID/:IDep",controller.CreateComment)
-    r.GET("/comments/:ID",controller.GetComment)
-    r.GET("/members/:ID",controller.GetUsernameByMemberID)
+	//Page.airline
+	r.GET("/airline", controller.GetAirline)
+	r.GET("/airline/:ID", controller.GetAirlineByID)
 
-	//Page.Bookshelf/follow
-	r.GET("/bookshelf/follow/:ID",controller.GetCartoonFollowByID)
+	//Page.airport
+	r.GET("/airport", controller.GetAirports)
+	r.GET("/airport/:ID", controller.GetAirportByID)
 
-	r.GET("/bookshelf/follows/:memberID/:cartoonID",controller.CreateFollow)
-	r.GET("/bookshelf/followsCheck/:memberID/:cartoonID",controller.CheckCartoonFollowByID)
-	r.DELETE("/bookshelf/follows/:memberID/:cartoonID",controller.DeleteFollow)
-
-	//Page.rating
-	r.GET("/cartoon/ratings/:mem4RatingID/:toon4RatingID",controller.CreateRating)
-	r.GET("/cartoon/ratingCheck/:mem4RatingID/:toon4RatingID",controller.CheckCartoonRatingByID)
-	r.DELETE("/cartoon/ratingDEL/:mem4RatingID/:toon4RatingID",controller.DeleteRating)
-
-	r.GET("/cartoon/rating",controller.GetCartoonRating1stID)
-	r.GET("/cartoon/ratings2nd",controller.GetCartoonRating2ndID)
-	r.GET("/cartoon/ratings3th",controller.GetCartoonRating3thID)
-	
-	
-	//Page.Bookshelf/paymentEpisodes
-	r.GET("/bookshelf/paymentEpisodes",controller.ListPaymentEpisode)
-	r.GET("/bookshelf/paymentEpisodes/:ID",controller.GetCartoonPaymentEpisodesByID)
-	
-	//Page.Bookshelf/history
-	r.GET("/bookshelf/history/:memberID",controller.GetCartoonHistoryByID)
-	r.GET("/bookshelf/history/:memberID/:cartoonID",controller.CreateHistory)
+	//Page.TypeOfFlight
+	r.GET("/TypeOfFlight", controller.GetTypeOfFlight)
+	r.GET("/TypeOfFlight/:ID", controller.GetTypeOfFlightByID)
 
 
-	
+	//Page.FlightDetails
+	r.POST("/flight-details", controller.CreateFlightDetails)
+	r.GET("/flight-details", controller.GetFlightDetails)
+	r.GET("/flight-details/:id", controller.GetFlightDetailsByID)
+	r.PUT("/flight-details/:id", controller.UpdateFlightDetails)
+	r.DELETE("/flight-details/:id", controller.DeleteFlightDetails)
+
+	//Page.FlightAndFlightDetails
+	r.POST("/flight-and-flight-details", controller.CreateFlightAndFlightDetails)
+	r.GET("/flight-and-flight-details", controller.GetFlightAndFlightDetails)
+	r.GET("/flight-and-flight-details/:id", controller.GetFlightAndFlightDetailsByID)
+	r.PUT("/flight-and-flight-details/:id", controller.UpdateFlightAndFlightDetails)
+	r.DELETE("/flight-and-flight-details/:id", controller.DeleteFlightAndFlightDetails)
+
 
 	// Run the server
-	r.Run()
+	r.Run("localhost:" + PORT)
 }
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

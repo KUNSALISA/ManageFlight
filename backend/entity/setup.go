@@ -13,7 +13,7 @@ func DB() *gorm.DB {
 }
 
 func SetupDatabase() {
-	database, err := gorm.Open(sqlite.Open("ProjectSA.db"), &gorm.Config{})
+	database, err := gorm.Open(sqlite.Open("G11_PROJECT.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -29,8 +29,13 @@ func SetupDatabase() {
 		&FlightDetails{},
 		&TypeOfFlight{},
 	)
-
 	db = database
 
-	
+	// TypeOfFlight := []entity.TypeOfFlight{
+	// 	{TypeFlight: "Departures "},
+	// 	{TypeFlight: "Domestic flight"},
+	// }
+	// for _, pkg := range TypeOfFlight {
+	// 	db.FirstOrCreate(&pkg, entity.TypeOfFlight{TypeFlight: pkg.TypeFlight})
+	// }
 }
