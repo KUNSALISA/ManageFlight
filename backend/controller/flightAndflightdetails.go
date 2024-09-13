@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/KUNSALISA/ManageFlight/entity"
+	"github.com/gin-gonic/gin"
 )
 
 // CreateFlightAndFlightDetails - ฟังก์ชันสำหรับสร้างข้อมูล FlightAndFlightDetails ใหม่
@@ -38,12 +38,26 @@ func CreateFlightAndFlightDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
 }
 
-// GetFlightAndFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightAndFlightDetails ทั้งหมด
+// // GetFlightAndFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightAndFlightDetails ทั้งหมด
+// func GetFlightAndFlightDetails(c *gin.Context) {
+// 	var flightAndFlightDetails []entity.FlightAndFlightDetails
+
+// 	// ดึงข้อมูลจากฐานข้อมูล
+// 	if err := entity.DB().Find(&flightAndFlightDetails).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	// ส่งข้อมูลกลับไปในรูป JSON
+// 	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
+// }
+
+// GetFlightAndFlightDetails - ดึงข้อมูล FlightAndFlightDetails ทั้งหมด
 func GetFlightAndFlightDetails(c *gin.Context) {
 	var flightAndFlightDetails []entity.FlightAndFlightDetails
 
-	// ดึงข้อมูลจากฐานข้อมูล
-	if err := entity.DB().Find(&flightAndFlightDetails).Error; err != nil {
+	// ดึงข้อมูลพร้อมกับการเชื่อมข้อมูลใน relation ต่างๆ เช่น Flight, FlightDetails, Admin
+	if err := entity.DB().Preload("Flight").Preload("FlightDetail").Preload("Admin").Find(&flightAndFlightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
