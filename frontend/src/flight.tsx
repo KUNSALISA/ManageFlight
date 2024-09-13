@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Avatar, Button, Table, Input, Row, Col } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import './App.css';
+import './flight.css';
 import axios from 'axios';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+
 
 const { Header, Content } = Layout;
 
-const App: React.FC = () => {
-  const [flights, setFlights] = useState([]);
+// กำหนดประเภทข้อมูลเที่ยวบิน
+interface FlightData {
+  flight_code: string;
+  FlyingFrom: string;
+  GoingTo: string;
+  schedule_start: string;
+  schedule_end: string;
+  airline_name: string;
+  flight_date: string;
+}
+
+const FlightList: React.FC = () => {
+  const [flights, setFlights] = useState<FlightData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Fetch data from backend
-    axios.get('https://api.example.com/flights') // แทนที่ URL ด้วย backend ที่ใช้
+    // ดึงข้อมูลจาก backend 
+    axios.get('https://localhost:8080/flight-and-flight-details')
       .then((response) => {
         setFlights(response.data);
       })
@@ -21,62 +34,68 @@ const App: React.FC = () => {
       });
   }, []);
 
+  const navigate = useNavigate(); // ใช้สำหรับการนำทาง
+
   const columns = [
     {
       title: 'Flight Code',
-      dataIndex: 'flightCode',
+      dataIndex: 'flight_code',
       key: 'flightCode',
     },
     {
       title: 'Flying From',
-      dataIndex: 'flyingFrom',
+      dataIndex: 'FlyingFrom',
       key: 'flyingFrom',
     },
     {
       title: 'Going To',
-      dataIndex: 'goingTo',
+      dataIndex: 'GoingTo',
       key: 'goingTo',
     },
     {
       title: 'Schedule Start',
-      dataIndex: 'scheduleStart',
+      dataIndex: 'schedule_start',
       key: 'scheduleStart',
     },
     {
       title: 'Schedule End',
-      dataIndex: 'scheduleEnd',
+      dataIndex: 'schedule_end',
       key: 'scheduleEnd',
     },
     {
       title: 'Airline',
-      dataIndex: 'airline',
+      dataIndex: 'airline_name',
       key: 'airline',
     },
     {
       title: 'Date',
-      dataIndex: 'date',
+      dataIndex: 'flight_date',
       key: 'date',
     },
     {
-      title: 'Actions',
-      key: 'actions',
-      render: (text, record) => (
-        <Button style={{ backgroundColor: '#D8D1BE', color: '#5F212E' }}>EDIT</Button>
+      title: 'Action',
+      key: 'action',
+      render: (_: any, record: FlightData) => (
+        <Button 
+          style={{ backgroundColor: '#D8D1BE', color: '#5F212E' }}
+          onClick={() => navigate(`/edit-flight/${record.flight_code}`)} // นำทางไปหน้า EditFlight โดยส่ง flight_code ไปด้วย
+        >
+          EDIT
+        </Button>
       ),
     },
   ];
 
   const handleSearch = () => {
     const filteredFlights = flights.filter(flight =>
-      flight.flightCode && flight.flightCode.toLowerCase().includes(searchTerm.toLowerCase())
+      flight.flight_code && flight.flight_code.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFlights(filteredFlights);
   };
-  
 
   return (
     <Layout>
-      {/* Header Section */}
+      {/* ส่วน Header */}
       <Header className="header" style={{ backgroundColor: '#69ABC1', height: 146 }}>
         <div style={{ float: 'left', paddingTop: 10 }}>
           <img
@@ -95,13 +114,13 @@ const App: React.FC = () => {
         </div>
       </Header>
 
-      {/* Content Section */}
+      {/* ส่วนเนื้อหา */}
       <Content style={{ padding: '50px 100px' }}>
-        {/* Search Section */}
+        {/* ส่วนค้นหา */}
         <Row style={{ marginBottom: 20 }}>
           <Col span={12}>
             <Input
-              placeholder="Search Flight by Code"
+              placeholder="ค้นหาเที่ยวบินด้วยรหัส"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               prefix={<SearchOutlined />}
@@ -110,16 +129,16 @@ const App: React.FC = () => {
           </Col>
           <Col span={12}>
             <Button type="primary" onClick={handleSearch} style={{ marginLeft: 10 }}>
-              Search
+              ค้นหา
             </Button>
           </Col>
         </Row>
 
-        {/* Table Section */}
+        {/* ตาราง */}
         <Table
           columns={columns}
           dataSource={flights}
-          rowKey="flightCode"
+          rowKey="flight_code"
           pagination={false}
         />
       </Content>
@@ -127,4 +146,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+
