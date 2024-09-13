@@ -15,13 +15,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EditFlight from "./EditFlight";
-import Flights from "./flight";
+import Flight from "./flight"; 
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Flights />} />
+        <Route path="/" element={<Flight />} />  
         <Route path="/edit-flight/:flightCode" element={<EditFlight />} />
       </Routes>
     </Router>
@@ -29,5 +29,6 @@ function App() {
 }
 
 export default App;
+
 
 

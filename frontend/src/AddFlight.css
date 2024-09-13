@@ -1,0 +1,146 @@
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Bree-Serif';
+    background-color: #f0f4f8;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px; /* ปรับขนาด padding ที่เหมาะสม */
+    background-color: #69ABC1;
+  }
+
+  .logo img {
+    height: 60px;
+  }
+
+  .logo-2 {
+    width: 96px;
+    height: 88px;
+    left: 1250px;
+    top: 8px;
+    position: absolute;
+    border-radius: 50%;
+  }
+  
+  .nav-1 {
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: flex-start; 
+    padding: 15px; 
+  }
+  
+  .nav {
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .nav-button {
+    background-color: transparent;
+    color: #600;
+    border: none;
+    font-family: 'Bree-Serif';
+    font-size: 18px;
+    cursor: pointer;
+    
+  }
+  
+  .nav-button:hover {
+    text-decoration: underline;
+  }
+  
+  .member {
+    background-color: white;
+    color: #600;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: 'Bree-Serif';
+    font-weight: bold;
+    margin-left: auto;
+  }
+  
+  .form-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  form {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 700px;
+  }
+  
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .form-group {
+    flex: 1;
+  }
+  
+  label {
+    font-family: 'Bree-Serif';
+    font-size: 14px;
+    color: #600;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  input[type="date"] {
+    font-family: inherit;
+  }
+  
+  .save-button {
+    background-color: #69ABC1;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+    font-family: 'Bree-Serif';
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-button:hover {
+    background-color: #5a8aad;
+  }
+  
+  @font-face {
+    font-family: 'Bree-Serif';
+    src: url(./assets/BreeSerif-Regular.ttf);
+  }
+  

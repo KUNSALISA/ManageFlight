@@ -4,28 +4,17 @@ import { SearchOutlined } from '@ant-design/icons';
 import './flight.css';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-
+import {FlightAndFlightDetailsInterface} from "./interfaces/fullmanageflight"
 
 const { Header, Content } = Layout;
 
-// กำหนดประเภทข้อมูลเที่ยวบิน
-interface FlightData {
-  flight_code: string;
-  FlyingFrom: string;
-  GoingTo: string;
-  schedule_start: string;
-  schedule_end: string;
-  airline_name: string;
-  flight_date: string;
-}
-
-const FlightList: React.FC = () => {
-  const [flights, setFlights] = useState<FlightData[]>([]);
+const Flight: React.FC = () => {
+  const [flights, setFlights] = useState<FlightAndFlightDetailsInterface[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     // ดึงข้อมูลจาก backend 
-    axios.get('https://localhost:8080/flight-and-flight-details')
+    axios.get('http://localhost:8080/flight-and-flight-details')
       .then((response) => {
         setFlights(response.data);
       })
@@ -38,47 +27,54 @@ const FlightList: React.FC = () => {
 
   const columns = [
     {
+      title: 'Date',
+      dataIndex: 'flight_date',
+      key: 'date',
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.Flight?.flight_date || "N/A"}</>,
+    },
+    {
       title: 'Flight Code',
       dataIndex: 'flight_code',
       key: 'flightCode',
-    },
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.FlightDetails?.flight_code || "N/A"}</>,
+    },    
     {
       title: 'Flying From',
-      dataIndex: 'FlyingFrom',
+      dataIndex: 'airport_code',
       key: 'flyingFrom',
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.FlightDetails?.Airport?.airport_code || "N/A"}</>,
     },
     {
       title: 'Going To',
-      dataIndex: 'GoingTo',
+      dataIndex: 'airport_code',
       key: 'goingTo',
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.FlightDetails?.Airport?.airport_code || "N/A"}</>,
     },
     {
       title: 'Schedule Start',
       dataIndex: 'schedule_start',
       key: 'scheduleStart',
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.FlightDetails?.schedule_start || "N/A"}</>,
     },
     {
       title: 'Schedule End',
       dataIndex: 'schedule_end',
       key: 'scheduleEnd',
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.FlightDetails?.schedule_end || "N/A"}</>,
     },
     {
       title: 'Airline',
       dataIndex: 'airline_name',
       key: 'airline',
-    },
-    {
-      title: 'Date',
-      dataIndex: 'flight_date',
-      key: 'date',
+      render: (record: FlightAndFlightDetailsInterface) => <>{record.FlightDetails?.Airline?.airline_name || "N/A"}</>,
     },
     {
       title: 'Action',
       key: 'action',
-      render: (_: any, record: FlightData) => (
+      render: (_: any, record: FlightAndFlightDetailsInterface) => (
         <Button 
           style={{ backgroundColor: '#D8D1BE', color: '#5F212E' }}
-          onClick={() => navigate(`/edit-flight/${record.flight_code}`)} // นำทางไปหน้า EditFlight โดยส่ง flight_code ไปด้วย
+          onClick={() => navigate(`/edit-flight/${record.FlightDetails?.flight_code}`)} // นำทางไปหน้า EditFlight โดยส่ง flight_code ไปด้วย
         >
           EDIT
         </Button>
@@ -93,6 +89,7 @@ const FlightList: React.FC = () => {
     setFlights(filteredFlights);
   };
 
+  
   return (
     <Layout>
       {/* ส่วน Header */}
@@ -145,5 +142,5 @@ const FlightList: React.FC = () => {
     </Layout>
   );
 };
-
+export default Flight;
 
