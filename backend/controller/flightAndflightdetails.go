@@ -53,10 +53,11 @@ func CreateFlightAndFlightDetails(c *gin.Context) {
 // }
 
 // GetFlightAndFlightDetails - ดึงข้อมูล FlightAndFlightDetails ทั้งหมด
+// GetFlightAndFlightDetails - ดึงข้อมูล FlightAndFlightDetails ทั้งหมด
 func GetFlightAndFlightDetails(c *gin.Context) {
 	var flightAndFlightDetails []entity.FlightAndFlightDetails
 
-	// ดึงข้อมูลพร้อมกับการเชื่อมข้อมูลใน relation ต่างๆ เช่น Flight, FlightDetails, Admin
+	// ดึงข้อมูลพร้อมกับการ preload relation ต่างๆ เช่น Flight, FlightDetails, Admin
 	if err := entity.DB().Preload("Flight").Preload("FlightDetail").Preload("Admin").Find(&flightAndFlightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
