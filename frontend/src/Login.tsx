@@ -1,12 +1,12 @@
 // import React, { useState } from 'react';
 // import { Form, Input, Button, message } from 'antd';
 // import axios from 'axios';
-// import { useNavigate } from 'react-router-dom'; // เพิ่ม useNavigate
+// import { useNavigate } from 'react-router-dom'; // นำ useNavigate มาใช้
 // import './Login.css';
 
 // const Login: React.FC = () => {
 //   const [loading, setLoading] = useState(false);
-//   const navigate = useNavigate(); // สร้างตัวแปร navigate
+//   const navigate = useNavigate(); // ใช้ navigate เพื่อเปลี่ยนเส้นทาง
 
 //   const onFinish = async (values: any) => {
 //     setLoading(true);
@@ -17,7 +17,7 @@
 //       });
 //       localStorage.setItem('token', response.data.token);
 //       message.success('Login successful');
-//       navigate('/flight'); // หลังจาก login สำเร็จ ให้ไปที่หน้า flight.tsx
+//       navigate('/flight'); // เมื่อ login สำเร็จจะไปหน้า flight
 //     } catch (error) {
 //       message.error('Login failed');
 //     } finally {
@@ -27,23 +27,13 @@
 
 //   return (
 //     <div className="login-container">
-//       <Form
-//         name="login"
-//         className="login-form"
-//         onFinish={onFinish}
-//       >
+//       <Form name="login" className="login-form" onFinish={onFinish}>
 //         <h1>Login</h1>
-//         <Form.Item
-//           name="email"
-//           rules={[{ required: true, message: 'Please input your Email!' }]}
-//         >
+//         <Form.Item name="email" rules={[{ required: true, message: 'Please input your Email!' }]}>
 //           <Input placeholder="Email" />
 //         </Form.Item>
 
-//         <Form.Item
-//           name="password"
-//           rules={[{ required: true, message: 'Please input your Password!' }]}
-//         >
+//         <Form.Item name="password" rules={[{ required: true, message: 'Please input your Password!' }]}>
 //           <Input.Password placeholder="Password" />
 //         </Form.Item>
 
@@ -59,16 +49,15 @@
 
 // export default Login;
 
-
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // นำ useNavigate มาใช้
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // ใช้ navigate เพื่อเปลี่ยนเส้นทาง
+  const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
     setLoading(true);
@@ -77,9 +66,12 @@ const Login: React.FC = () => {
         email: values.email,
         password: values.password,
       });
+      // เก็บ token ที่ได้ใน localStorage
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('token_type', 'Bearer'); // กำหนด Bearer ไว้ใช้ในการส่ง header
+
       message.success('Login successful');
-      navigate('/flight'); // เมื่อ login สำเร็จจะไปหน้า flight
+      navigate('/flight'); // เปลี่ยนหน้าไปที่ flight หลังจาก login สำเร็จ
     } catch (error) {
       message.error('Login failed');
     } finally {
@@ -91,16 +83,27 @@ const Login: React.FC = () => {
     <div className="login-container">
       <Form name="login" className="login-form" onFinish={onFinish}>
         <h1>Login</h1>
-        <Form.Item name="email" rules={[{ required: true, message: 'Please input your Email!' }]}>
+        <Form.Item
+          name="email"
+          rules={[{ required: true, message: 'Please input your Email!' }]}
+        >
           <Input placeholder="Email" />
         </Form.Item>
 
-        <Form.Item name="password" rules={[{ required: true, message: 'Please input your Password!' }]}>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: 'Please input your Password!' }]}
+        >
           <Input.Password placeholder="Password" />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading} className="login-form-button">
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            className="login-form-button"
+          >
             Log in
           </Button>
         </Form.Item>
