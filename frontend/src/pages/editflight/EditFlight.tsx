@@ -1,22 +1,8 @@
-// import React from 'react';
-// import { useParams } from 'react-router-dom';
-
-// const EditFlight: React.FC = () => {
-//   const { flightCode } = useParams<{ flightCode: string }>(); // ดึง flightCode จาก URL
-
-//   return (
-//     <div>
-//       <h1>Edit Flight {flightCode}</h1>
-//       {/* เพิ่มฟอร์มหรือข้อมูลเพื่อแก้ไขเที่ยวบิน */}
-//     </div>
-//   );
-// };
-
-// export default EditFlight;
-
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Form } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
+import FFF from '../../assets/FFF.png';
+import PPP from '../../assets/PPP.jpg';
 
 interface FlightData {
   key: string;

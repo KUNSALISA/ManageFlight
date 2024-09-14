@@ -1,0 +1,61 @@
+.head-log {
+    margin: 0; /* ลบค่า margin ออกเพื่อไม่ให้มีการเว้นระยะ */
+    width: 100vw; /* กว้างเต็มหน้าจอ */
+    height: 100vh; /* สูงเต็มหน้าจอ */
+    background: linear-gradient(to right, #D8D1BE, #EBE8DF, #69ABC1);
+    background-size: cover; /* ทำให้พื้นหลังขยายครอบคลุมพื้นที่ทั้งหมด */
+    background-position: center; /* จัดตำแหน่งพื้นหลังตรงกลาง */
+    background-repeat: no-repeat; /* ไม่ให้พื้นหลังซ้ำ */
+    position: absolute; /* ใช้ตำแหน่งที่แน่นอนเพื่อให้เต็มหน้าจอ */
+    top: 0; /* ตั้งค่าตำแหน่งเริ่มต้นที่ด้านบนของหน้าจอ */
+    left: 0; /* ตั้งค่าตำแหน่งเริ่มต้นที่ด้านซ้ายของหน้าจอ */
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 7%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 50px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.4), 
+        rgba(255, 255, 255, 0.6)  
+    );
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo-login {
+    margin-left: 150px;
+    width: 110px;
+    height: 95px;
+  }
+  
+  .login-form h1 {
+    text-align: center;
+    font-size: 50px;
+    margin-top: -7px;
+    margin-bottom: 30px;
+    text-shadow: 0.1em 0.1em #b5b5b5;
+    color: #600;
+  }
+  
+  .login-form-button-go {
+    margin-bottom: auto;
+    margin-top: 7%;
+    margin-left: 19%;
+    padding: 20px 100px;
+    background-color:  #600;
+    border-color: #600;
+    font-size: 17px;
+    border-radius: 12px;
+  }
+  
+  .login-form-button-go:hover {
+    background-color: #A64B2A;
+    border-color: #A64B2A;
+  }
+  

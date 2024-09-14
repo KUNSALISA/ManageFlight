@@ -1,0 +1,93 @@
+   .add-fligth-container {
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+  }
+
+  .header-addf {
+    display: flex;
+    background-color: #69ABC1;
+    height: 15vh;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .button-group-addflight {
+    display: flex;
+    margin-left: 2%;
+    gap: 25px;
+  }
+  
+  .home-button-addf {
+    margin-top: 14%;
+    margin-left: 30px;
+    background-color: #ffffff;
+    border: 2px solid #D4E9E2;
+    color: #600;
+    font-family: 'Bree Serif', serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .home-button-addf:hover {
+    background-color: #D4E9E2;
+  }
+  
+  .addf-logo {
+    width: 100px;
+    height: 85px;
+  }
+  
+  .profile-section-addf {
+    display: flex;
+    align-items: center;
+    margin-right: 3%;
+    gap: 20px;
+  }
+  
+  .profile-image-addf {
+    width: 65px;
+    height: 60px;
+    border-radius: 50%;
+  }
+  
+  .user-name-addf {
+    background-color: #ffffff;
+    font-family: 'Bree Serif', serif;
+    font-size: 16px;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .form-container-addf {
+    margin-left: 22%;
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+  }
+  
+  .save-button-addf {
+    margin-top: 1%;
+    background-color: #69ABC1;
+    border-color:  #69ABC1;
+    color: rgb(255, 255, 255);
+    font-family: 'Bree Serif', serif;
+    font-size: 16px;
+    padding: 8px;
+    width: 753px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .save-button-addf:hover {
+    background-color:  #69ABC1;
+    border-color: #69ABC1;
+  }
+  

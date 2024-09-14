@@ -29,8 +29,7 @@ func LoginByUsername(c *gin.Context) {
 		return
 	}
 
-	// Generate JWT Token
-	jwtWrapper.SecretKey = "your_secret_key"
+	jwtWrapper.SecretKey = "Manage"
 	jwtWrapper.Issuer = "ManageFlight"
 	jwtWrapper.ExpirationHours = 24
 

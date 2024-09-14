@@ -1,53 +1,19 @@
-// import React from 'react';
-// import Flight from './flight';
-
-// const App = () => {
-//   return (
-//     <div>
-//       <Flight />
-//     </div>
-//   );
-// };
-
-// export default App;  
-
-
-// import React from "react";
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import EditFlight from "./EditFlight";
-// import Flight from "./flight"; 
-
-// function App() {
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/" element={<Flight />} />
-//         <Route path="/" element={<Flight />} />
-//         <Route path="/edit-flight/:flightCode" element={<EditFlight />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import EditFlight from "./EditFlight";
-import Flight from "./flight"; 
+import Login from "./pages/login/Login";
+import EditFlight from "./pages/editflight/EditFlight";
+import Flight from "./pages/flight/flight"; 
+import DateFlight from "./pages/dateflight/DateFlight";
+import AddFlight from "./pages/addflight/AddFlight";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* เส้นทางเริ่มต้นที่หน้า Login */}
         <Route path="/" element={<Login />} />
-
-        {/* เส้นทางไปหน้า Flight */}
         <Route path="/flight" element={<Flight />} />
-
-        {/* เส้นทางไปหน้า EditFlight */}
+        <Route path="/date-flight" element={<DateFlight />} />
+        <Route path="/add-flight" element={<AddFlight />} /> 
         <Route path="/edit-flight/:flightCode" element={<EditFlight />} />
       </Routes>
     </Router>
