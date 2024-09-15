@@ -30,7 +30,6 @@
 // 	c.JSON(http.StatusOK, gin.H{"data": airports})
 // }
 
-
 // // CreateAirport - ฟังก์ชันสำหรับสร้างข้อมูลสนามบินใหม่
 // func CreateAirport(c *gin.Context) {
 // 	var airport entity.Airport
@@ -51,7 +50,6 @@
 // 	c.JSON(http.StatusOK, gin.H{"data": airport})
 // }
 
-
 package controller
 
 import (
@@ -61,35 +59,54 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetAirports - ฟังก์ชันสำหรับดึงข้อมูลสนามบินทั้งหมด
+// // GetAirports - ฟังก์ชันสำหรับดึงข้อมูลสนามบินทั้งหมด
+// func GetAirports(c *gin.Context) {
+// 	var airports []entity.Airport
+
+// 	// ดึงข้อมูลจากฐานข้อมูล
+// 	if err := entity.DB().Find(&airports).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	// ส่งข้อมูลกลับไปในรูป JSON
+// 	c.JSON(http.StatusOK, gin.H{"data": airports})
+// }
+
 func GetAirports(c *gin.Context) {
 	var airports []entity.Airport
 
-	// ดึงข้อมูลจากฐานข้อมูล
 	if err := entity.DB().Find(&airports).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ส่งข้อมูลกลับไปในรูป JSON
 	c.JSON(http.StatusOK, gin.H{"data": airports})
 }
 
-// GetAirportByID - ฟังก์ชันสำหรับดึงข้อมูลสนามบินตาม ID
+// // GetAirportByID - ฟังก์ชันสำหรับดึงข้อมูลสนามบินตาม ID
+// func GetAirportByID(c *gin.Context) {
+// 	var airport entity.Airport
+// 	id := c.Param("id")
+
+// 	// ดึงข้อมูลจากฐานข้อมูลตาม ID
+// 	if err := entity.DB().First(&airport, id).Error; err != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "Airport not found"})
+// 		return
+// 	}
+
+// 	// ส่งข้อมูลกลับไปในรูป JSON
+// 	c.JSON(http.StatusOK, gin.H{"data": airport})
+// }
+
 func GetAirportByID(c *gin.Context) {
 	var airport entity.Airport
 	id := c.Param("id")
 
-	// ดึงข้อมูลจากฐานข้อมูลตาม ID
 	if err := entity.DB().First(&airport, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Airport not found"})
 		return
 	}
 
-	// ส่งข้อมูลกลับไปในรูป JSON
 	c.JSON(http.StatusOK, gin.H{"data": airport})
 }
-
-
-
-

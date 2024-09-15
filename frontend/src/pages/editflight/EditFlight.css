@@ -1,4 +1,4 @@
-
+/* 
  * {
   margin: 0;
   padding: 0;
@@ -20,7 +20,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px; /* ปรับขนาด padding ที่เหมาะสม */
+  padding: 20px 40px; 
   background-color: #69ABC1;
 }
 
@@ -160,4 +160,22 @@ input[type="date"] {
 @font-face {
   font-family: 'Bree-Serif';
   src: url(./assets/BreeSerif-Regular.ttf);
+} */
+
+
+
+.edit-flight-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.edit-flight-form {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
 }

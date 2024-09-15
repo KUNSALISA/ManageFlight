@@ -7,43 +7,50 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// func CreateTypeOfFlight(c *gin.Context) {
-// 	var types entity.TypeOfFlight
+// func GetTypeOfFlight(c *gin.Context) {
+// 	var types []entity.TypeOfFlight
+// 	db := entity.DB()
 
-// 	if err := c.ShouldBindJSON(&types); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 	results := db.Select("*").Find(&types)
+// 	if results.Error != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 // 		return
 // 	}
-// 	if err := entity.DB().Create(&types).Error; err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{"data": types})
+// 	c.JSON(http.StatusOK, types)
 // }
 
 func GetTypeOfFlight(c *gin.Context) {
 	var types []entity.TypeOfFlight
-	db := entity.DB()
-
-	results := db.Select("*").Find(&types)
-	if results.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+	if err := entity.DB().Find(&types).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, types)
+	c.JSON(http.StatusOK, gin.H{"data": types})
 }
 
-// GetAirlineByID - ฟังก์ชันสำหรับดึงข้อมูลสายการบิน ID
+// // GetAirlineByID - ฟังก์ชันสำหรับดึงข้อมูลสายการบิน ID
+// func GetTypeOfFlightByID(c *gin.Context) {
+// 	var types entity.TypeOfFlight
+// 	id := c.Param("id")
+
+// 	// ดึงข้อมูลจากฐานข้อมูลตาม ID
+// 	if err := entity.DB().First(&types, id).Error; err != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "TypeOfFlight not found"})
+// 		return
+// 	}
+
+// 	// ส่งข้อมูลกลับไปในรูป JSON
+// 	c.JSON(http.StatusOK, gin.H{"data": types})
+// }
+
 func GetTypeOfFlightByID(c *gin.Context) {
 	var types entity.TypeOfFlight
 	id := c.Param("id")
 
-	// ดึงข้อมูลจากฐานข้อมูลตาม ID
 	if err := entity.DB().First(&types, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "TypeOfFlight not found"})
 		return
 	}
 
-	// ส่งข้อมูลกลับไปในรูป JSON
 	c.JSON(http.StatusOK, gin.H{"data": types})
 }
