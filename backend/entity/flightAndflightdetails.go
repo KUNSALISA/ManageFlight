@@ -14,5 +14,5 @@ type FlightAndFlightDetails struct {
 	FlightDetail   FlightDetails `gorm:"foriegnKey:FlightDetailID"`
 
 	AdminID *uint
-	Admin  Admin `gorm:"foriegnKey:AdminID"`
+	Admin  Admin `gorm:"foriegnKey:admin_id"`
 }

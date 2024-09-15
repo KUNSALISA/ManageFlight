@@ -8,11 +8,11 @@ import (
 
 type Admin struct {
 	gorm.Model
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
-	Birthday  time.Time `json:"birthday"`
+	Email     string    `gorm:"unique;not null" json:"email"` // อีเมลต้องไม่ซ้ำและไม่เป็นค่าว่าง
+	Password  string    `gorm:"not null" json:"password"`
+	FirstName string    `gorm:"not null" json:"first_name"`
+	LastName  string    `gorm:"not null" json:"last_name"`
+	Birthday  time.Time `gorm:"not null" json:"birthday"`
 
 	Admin []FlightAndFlightDetails `gorm:"foreignKey:AdminID"`
 }

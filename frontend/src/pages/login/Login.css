@@ -59,3 +59,17 @@
     border-color: #A64B2A;
   }
   
+  .register-link-button {
+    margin-bottom: auto;
+    margin-left: 19%;
+    font-size: 17px;
+    padding: 20px 93px;
+    background-color:  #600;
+    border-color: #600;
+    border-radius: 12px;
+    color: white;
+  }
+  .register-link-button:hover {
+    background-color: #A64B2A;
+    border-color: #A64B2A;
+  }

@@ -8,7 +8,7 @@ import (
 	"github.com/KUNSALISA/ManageFlight/entity"
 )
 
-// CreateFlight - ฟังก์ชันสำหรับสร้างข้อมูลเที่ยวบินใหม่
+
 func CreateFlight(c *gin.Context) {
 	var flight entity.Flight
 
@@ -48,7 +48,6 @@ func GetFlights(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": flights})
 }
 
-// GetFlightByID - ฟังก์ชันสำหรับดึงข้อมูลเที่ยวบินตาม ID
 func GetFlightByID(c *gin.Context) {
 	var flight entity.Flight
 	id := c.Param("id")

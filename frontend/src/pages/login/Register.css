@@ -1,0 +1,27 @@
+.register-modal .ant-modal-body {
+    padding: 20px;
+}
+
+.register-modal .ant-form-item-label {
+    padding-bottom: 0;
+}
+
+.register-modal {
+    width: 100%;
+}
+
+.register-form-button {
+    margin-bottom: auto;
+    margin-left: 19%;
+    font-size: 17px;
+    padding: 20px 93px;
+    background-color:  #600;
+    border-color: #600;
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+  }
+  .register-form-button {
+    background-color: #600;
+    border-color: #600;
+  }
