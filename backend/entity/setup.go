@@ -20,8 +20,6 @@ func SetupDatabase() {
 		panic("failed to connect database")
 	}
 
-	// Migrate the schema
-
 	database.AutoMigrate(
 		&Admin{},
 		&Airline{},

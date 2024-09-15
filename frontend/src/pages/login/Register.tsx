@@ -8,13 +8,14 @@ const Register: React.FC<{ visible: boolean; onClose: () => void }> = ({ visible
 
   const onFinish = async (values: any) => {
     setLoading(true);
+    const formattedBirthday = values.birthday.toISOString();
     try {
       await axios.post('http://localhost:8080/register', {
         email: values.email,
         password: values.password,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        birthday: values.birthday,
+        first_name: values.firstName,
+        last_name: values.lastName,
+        birthday: formattedBirthday,
       });
       message.success('Registration successful');
       onClose(); // ปิด modal เมื่อสมัครสำเร็จ

@@ -163,7 +163,7 @@ input[type="date"] {
 } */
 
 
-
+/* 
 .edit-flight-container {
   max-width: 600px;
   margin: 0 auto;
@@ -178,4 +178,35 @@ input[type="date"] {
 
 h2 {
   text-align: center;
+} */
+
+
+
+
+
+
+.edit-flight-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-btn-primary {
+  width: 100px;
+}
+
+.ant-btn-danger {
+  width: 100px;
 }

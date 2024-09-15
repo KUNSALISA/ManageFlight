@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/KUNSALISA/ManageFlight/entity"
 	"github.com/KUNSALISA/ManageFlight/services"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func LoginByUsername(c *gin.Context) {
@@ -42,25 +44,87 @@ func LoginByUsername(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
+//signup
+
 func RegisterAdmin(c *gin.Context) {
-	var newAdmin entity.Admin
 
-	if err := c.ShouldBindJSON(&newAdmin); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+	var payload entity.Admin
+
+	if err := c.ShouldBindJSON(&payload); err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
+
 	}
 
-	hashedPassword, err := entity.HashPassword(newAdmin.Password)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
-		return
-	}
-	newAdmin.Password = hashedPassword
+	db := entity.DB()
 
-	if err := entity.DB().Create(&newAdmin).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+	var userCheck entity.Admin
+
+	result := db.Where("email = ?", payload.Email).First(&userCheck)
+
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+
 		return
+
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
+	if userCheck.ID != 0 {
+
+		c.JSON(http.StatusConflict, gin.H{"error": "Email is already registered"})
+
+		return
+
+	}
+
+	hashedPassword, _ := entity.HashPassword(payload.Password)
+	user := entity.Admin{
+		Email:     payload.Email,
+		Password:  hashedPassword,
+		FirstName: payload.FirstName,
+		LastName:  payload.LastName,
+		Birthday:  payload.Birthday,
+	}
+
+	if err := db.Create(&user).Error; err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+
+	}
+	c.JSON(http.StatusCreated, gin.H{"message": "Sign-up successful"})
+
 }
+
+// func RegisterAdmin(c *gin.Context) {
+// 	var newAdmin entity.Admin
+
+// 	if err := c.ShouldBindJSON(&newAdmin); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+// 		return
+// 	}
+
+// 	// ตรวจสอบการแปลงค่าที่รับเข้ามาถูกต้องหรือไม่
+// 	if newAdmin.Birthday.IsZero() {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid birthday format"})
+// 		return
+// 	}
+
+// 	hashedPassword, err := entity.HashPassword(newAdmin.Password)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
+// 		return
+// 	}
+// 	newAdmin.Password = hashedPassword
+
+// 	if err := entity.DB().Create(&newAdmin).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
+// }
