@@ -6,40 +6,8 @@ import (
 
 	"github.com/KUNSALISA/ManageFlight/entity"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
-
-// // CreateFlightDetails - ฟังก์ชันสำหรับสร้างข้อมูล FlightDetails ใหม่
-// func CreateFlightDetails(c *gin.Context) {
-// 	var flightDetails entity.FlightDetails
-
-// 	// ผูกข้อมูลจาก JSON ไปยัง struct flightDetails
-// 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// ตรวจสอบว่า FlyingFromID และ GoingToID มีค่าหรือไม่
-// 	if flightDetails.FlyingFromID == nil || flightDetails.GoingToID == nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "FlyingFromID and GoingToID are required"})
-// 		return
-// 	}
-
-// 	// ตรวจสอบว่า AirlineID, TypeID เป็นค่า valid หรือไม่ (หากมีการตรวจสอบ)
-// 	// สมมติว่ามีการตรวจสอบว่า AirlineID, TypeID เป็น valid ID ได้
-
-// 	// ตั้งค่า Datetime เป็นเวลาปัจจุบัน
-// 	flightDetails.CreatedAt = time.Now()
-// 	flightDetails.UpdatedAt = time.Now()
-
-// 	// บันทึกข้อมูลลงฐานข้อมูล
-// 	if err := entity.DB().Create(&flightDetails).Error; err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// ส่งข้อมูลกลับไปในรูป JSON พร้อมสถานะ OK
-// 	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
-// }
 
 func CreateFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
@@ -69,13 +37,22 @@ func CreateFlightDetails(c *gin.Context) {
 func GetFlightDetails(c *gin.Context) {
 	var flightDetails []entity.FlightDetails
 
-	// ดึงข้อมูลจากฐานข้อมูล
-	if err := entity.DB().Find(&flightDetails).Error; err != nil {
+	// ดึงข้อมูลจากฐานข้อมูลพร้อมข้อมูลที่สัมพันธ์กัน
+	if err := entity.DB().
+		Preload("Airline").
+		Preload("FlyingFrom", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id, airport_code")
+		}).
+		Preload("GoingTo", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id, airport_code")
+		}).
+		Preload("Type").
+		Find(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ส่งข้อมูลกลับไปในรูป JSON
+	// ส่งข้อมูลกลับไปในรูปแบบ JSON
 	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
 }
 

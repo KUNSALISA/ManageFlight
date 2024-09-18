@@ -29,3 +29,6 @@ type FlightDetails struct {
 
 	FlightDetail []FlightAndFlightDetails `gorm:"foreignKey:FlightDetailID"`
 }
+
+
+
