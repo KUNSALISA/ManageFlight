@@ -41,7 +41,7 @@ func GetFlightDetails(c *gin.Context) {
 	if err := entity.DB().
 		Preload("Airline").
 		Preload("FlyingFrom", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id, airport_code")
+			return db.Select("id, airport_code") //เอา id ออก
 		}).
 		Preload("GoingTo", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id, airport_code")
