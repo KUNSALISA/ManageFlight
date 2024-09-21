@@ -297,10 +297,10 @@ func SetupDatabase() {
 			Hour:          4,
 			Cost:          100,
 			Point:         10,
-			AirlineID:     &airline.ID,
-			FlyingFromID:  &flyingFrom.ID,
-			GoingToID:     &goingTo.ID,
-			TypeID:        &flightType.ID,
+			AirlineID:     UintPtr(1),
+			FlyingFromID:  UintPtr(2),
+			GoingToID:     UintPtr(3),
+			TypeID:        UintPtr(1),
 		},
 		{
 			FlightCode:    "AA102",
@@ -309,10 +309,10 @@ func SetupDatabase() {
 			Hour:          4,
 			Cost:          150,
 			Point:         20,
-			AirlineID:     &airline.ID,
-			FlyingFromID:  &flyingFrom.ID,
-			GoingToID:     &goingTo.ID,
-			TypeID:        &flightType.ID,
+			AirlineID:     UintPtr(3),
+			FlyingFromID:  UintPtr(1),
+			GoingToID:     UintPtr(4),
+			TypeID:        UintPtr(2),
 		},
 		{
 			FlightCode:    "TG202",
@@ -345,9 +345,12 @@ func SetupDatabase() {
 
 	flightAndDetails := []FlightAndFlightDetails{
 		{
-			FlightID:       &flight.ID,
-			FlightDetailID: &flightDetail.ID,
-			AdminID:        &admin.ID,
+			// FlightID:       &flight.ID,
+			// FlightDetailID: &flightDetail.ID,
+			// AdminID:        &admin.ID,
+			FlightID:       UintPtr(2),
+			FlightDetailID: UintPtr(3),
+			AdminID:        UintPtr(1),
 		},
 	}
 

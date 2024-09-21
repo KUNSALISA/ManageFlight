@@ -1,13 +1,14 @@
-
 // import React, { useState } from 'react';
 // import { Form, Input, Button, message } from 'antd';
 // import axios from 'axios';
 // import { useNavigate } from 'react-router-dom';
 // import './Login.css';
 // import FFF from '../../assets/FFF.png';
+// import RegisterModal from './Register'; // นำเข้าคอมโพเนนต์ RegisterModal
 
 // const Login: React.FC = () => {
 //   const [loading, setLoading] = useState(false);
+//   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false); // ใช้สถานะเพื่อเปิด/ปิด Modal
 //   const navigate = useNavigate();
 
 //   const onFinish = async (values: any) => {
@@ -17,12 +18,11 @@
 //         email: values.email,
 //         password: values.password,
 //       });
-//       // เก็บ token ที่ได้ใน localStorage
 //       localStorage.setItem('token', response.data.token);
-//       localStorage.setItem('token_type', 'Bearer'); // กำหนด Bearer ไว้ใช้ในการส่ง header
+//       localStorage.setItem('token_type', 'Bearer');
 
 //       message.success('Login successful');
-//       navigate('/flight'); // เปลี่ยนหน้าไปที่ flight หลังจาก login สำเร็จ
+//       navigate('/flight');
 //     } catch (error) {
 //       message.error('Login failed');
 //     } finally {
@@ -30,10 +30,18 @@
 //     }
 //   };
 
+//   const showRegisterModal = () => {
+//     setIsRegisterModalVisible(true);
+//   };
+
+//   const handleRegisterModalClose = () => {
+//     setIsRegisterModalVisible(false);
+//   };
+
 //   return (
 //     <div className="head-log">
 //       <div className="login-container">
-//       <img src={FFF} alt="Logo" className="logo-login" />
+//         <img src={FFF} alt="Logo" className="logo-login" />
 //         <Form name="login" className="login-form" onFinish={onFinish}>
 //           <h1>Login</h1>
 //           <Form.Item
@@ -60,13 +68,27 @@
 //               Log in
 //             </Button>
 //           </Form.Item>
+//           <Form.Item>
+//             <Button
+//               type="link"
+//               onClick={showRegisterModal}
+//               className="register-link-button"
+//             >
+//               Sign Up
+//             </Button>
+//           </Form.Item>
 //         </Form>
 //       </div>
+//       <RegisterModal
+//         visible={isRegisterModalVisible}
+//         onClose={handleRegisterModalClose}
+//       />
 //     </div>
 //   );
 // };
 
 // export default Login;
+
 
 
 import React, { useState } from 'react';
