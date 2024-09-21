@@ -99,32 +99,3 @@ func RegisterAdmin(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Sign-up successful"})
 
 }
-
-// func RegisterAdmin(c *gin.Context) {
-// 	var newAdmin entity.Admin
-
-// 	if err := c.ShouldBindJSON(&newAdmin); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
-// 		return
-// 	}
-
-// 	// ตรวจสอบการแปลงค่าที่รับเข้ามาถูกต้องหรือไม่
-// 	if newAdmin.Birthday.IsZero() {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid birthday format"})
-// 		return
-// 	}
-
-// 	hashedPassword, err := entity.HashPassword(newAdmin.Password)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
-// 		return
-// 	}
-// 	newAdmin.Password = hashedPassword
-
-// 	if err := entity.DB().Create(&newAdmin).Error; err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
-// }

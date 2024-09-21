@@ -38,22 +38,6 @@ func CreateFlightAndFlightDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
 }
 
-// // GetFlightAndFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightAndFlightDetails ทั้งหมด
-// func GetFlightAndFlightDetails(c *gin.Context) {
-// 	var flightAndFlightDetails []entity.FlightAndFlightDetails
-
-// 	// ดึงข้อมูลจากฐานข้อมูล
-// 	if err := entity.DB().Find(&flightAndFlightDetails).Error; err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// ส่งข้อมูลกลับไปในรูป JSON
-// 	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
-// }
-
-// GetFlightAndFlightDetails - ดึงข้อมูล FlightAndFlightDetails ทั้งหมด
-// GetFlightAndFlightDetails - ดึงข้อมูล FlightAndFlightDetails ทั้งหมด
 func GetFlightAndFlightDetails(c *gin.Context) {
 	var flightAndFlightDetails []entity.FlightAndFlightDetails
 
