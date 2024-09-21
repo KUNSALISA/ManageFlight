@@ -194,12 +194,12 @@ const AddFlight: React.FC = () => {
     try {
       const response = await axios.post('http://localhost:8080/createFlightDetails', {
         flight_code: values.flightCode,
-        schedule_start: values.scheduleStart.format('YYYY-MM-DD'), // เปลี่ยน DatePicker เป็น format ของ backend
+        schedule_start: values.scheduleStart.format('YYYY-MM-DD'), 
         schedule_end: values.scheduleEnd.format('YYYY-MM-DD'),
         hour: values.hour,
         cost: values.cost,
         point: values.point,
-        airline_id: values.airlineId, // ควรใช้ airline_id ตาม backend
+        airline_id: values.airlineId, 
         flying_from_id: values.flyingFrom,
         going_to_id: values.goingTo,
         type_id: values.type,
