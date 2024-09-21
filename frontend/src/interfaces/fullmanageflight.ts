@@ -48,7 +48,7 @@ export interface AdminInterface {
     Password: string;
     FirstName: string;
     LastName: string;
-    Birthday: Date;
+    Birthday: string;
 }
 
 // Airline Interface
@@ -67,7 +67,7 @@ export interface AirportInterface {
 // Flight Interface
 export interface FlightInterface {
     ID?: number;
-    FlightDate: Date;
+    FlightDate: string;
 }
 
 // FlightAndFlightDetails Interface
@@ -85,8 +85,8 @@ export interface FlightAndFlightDetailsInterface {
 export interface FlightDetailsInterface {
     ID?: number;
     FlightCode: string;
-    ScheduleStart: Date;
-    ScheduleEnd: Date;
+    ScheduleStart: string;
+    ScheduleEnd: string;
     Hour: number;
     Cost: number;
     Point: number;
