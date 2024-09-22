@@ -11,9 +11,9 @@ type FlightDetails struct {
 	FlightCode    string    `json:"flight_code"`
 	ScheduleStart time.Time `json:"schedule_start"`
 	ScheduleEnd   time.Time `json:"schedule_end"`
-	Hour          uint8     `json:"hour"`
-	Cost          uint8     `json:"cost"`
-	Point         uint8     `json:"point"`
+	Hour          uint16    `json:"hour"`
+	Cost          uint16    `json:"cost"`
+	Point         uint16    `json:"point"`
 
 	AirlineID *uint
 	Airline   Airline `gorm:"foriegnKey:AirlineID"`
@@ -29,6 +29,3 @@ type FlightDetails struct {
 
 	FlightDetail []FlightAndFlightDetails `gorm:"foreignKey:FlightDetailID"`
 }
-
-
-
