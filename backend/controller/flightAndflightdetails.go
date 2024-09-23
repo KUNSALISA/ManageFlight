@@ -8,47 +8,65 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateFlightAndFlightDetails - ฟังก์ชันสำหรับสร้างข้อมูล FlightAndFlightDetails ใหม่
-func CreateFlightAndFlightDetails(c *gin.Context) {
-	var flightAndFlightDetails entity.FlightAndFlightDetails
+type CreateFlightAndDetailsRequest struct {
+	FlightID        uint   `json:"flightID"`
+	FlightDetailIDs []uint `json:"flightDetailIDs"` // เปลี่ยนเป็นอาร์เรย์
+	AdminID         uint   `json:"adminID"`
+}
 
-	// ผูกข้อมูลจาก JSON ไปยัง struct flightAndFlightDetails
-	if err := c.ShouldBindJSON(&flightAndFlightDetails); err != nil {
+func CreateFlightAndFlightDetails(c *gin.Context) {
+	var req CreateFlightAndDetailsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ตรวจสอบว่า FlightID, FlightDetailID, AdminID มีค่าหรือไม่
-	if flightAndFlightDetails.FlightID == nil || flightAndFlightDetails.FlightDetailID == nil || flightAndFlightDetails.AdminID == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "FlightID, FlightDetailID, and AdminID are required"})
+	// ตรวจสอบข้อมูล Admin ที่ส่งมา
+	var admin entity.Admin
+	if err := entity.DB().First(&admin, req.AdminID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Admin not found"})
 		return
 	}
 
-	// ตั้งค่า Datetime เป็นเวลาปัจจุบัน
-	flightAndFlightDetails.CreatedAt = time.Now()
-	flightAndFlightDetails.UpdatedAt = time.Now()
-
-	// บันทึกข้อมูลลงฐานข้อมูล
-	if err := entity.DB().Create(&flightAndFlightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+	// สำหรับแต่ละ FlightDetailID
+	for _, flightDetailID := range req.FlightDetailIDs {
+		flightAndDetails := entity.FlightAndFlightDetails{
+			FlightID:       &req.FlightID,
+			FlightDetailID: &flightDetailID,
+			AdminID:        &req.AdminID,
+		}
+		if err := entity.DB().Create(&flightAndDetails).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create flight and details"})
+			return
+		}
 	}
 
-	// ส่งข้อมูลกลับไปในรูป JSON พร้อมสถานะ OK
-	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
+	c.JSON(http.StatusOK, gin.H{"status": "Flight and details added successfully"})
+}
+
+func parseDate(dateStr string) time.Time {
+	layout := "2006-01-02"
+	t, _ := time.Parse(layout, dateStr)
+	return t
 }
 
 func GetFlightAndFlightDetails(c *gin.Context) {
-	var flightAndFlightDetails []entity.FlightAndFlightDetails
+	var flightAndDetails []entity.FlightAndFlightDetails
 
-	// ดึงข้อมูลพร้อมกับการ preload relation ต่างๆ เช่น Flight, FlightDetails, Admin
-	if err := entity.DB().Preload("Flight").Preload("FlightDetail").Preload("Admin").Find(&flightAndFlightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := entity.DB().
+		Preload("Flight").
+		Preload("FlightDetail").
+		Preload("FlightDetail.Airline").
+		Preload("FlightDetail.FlyingFrom").
+		Preload("FlightDetail.GoingTo").
+		Preload("FlightDetail.Type").
+		Preload("Admin").
+		First(&flightAndDetails).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get flight and details"})
 		return
 	}
-
 	// ส่งข้อมูลกลับไปในรูป JSON
-	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
+	c.JSON(http.StatusOK, gin.H{"data": flightAndDetails})
 }
 
 // GetFlightAndFlightDetailsByID - ฟังก์ชันสำหรับดึงข้อมูล FlightAndFlightDetails ตาม ID
