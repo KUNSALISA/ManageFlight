@@ -271,7 +271,7 @@ const FlightTable: React.FC = () => {
       key: "action",
       render: (text, record) => (
         <Button className="edit-button" onClick={() => navigate(`/edit-flight/${record.ID}`)}>
-          EDIT
+        EDIT
         </Button>
       ),
     },

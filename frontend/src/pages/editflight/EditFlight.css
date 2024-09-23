@@ -1,212 +1,108 @@
-/* 
- * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Bree-Serif';
-  background-color: #f0f4f8;
-}
-
-.container {
-  display: flex;
+.edit-flight-container {
   flex-direction: column;
+  align-items: center;
   height: 100vh;
+  background-color: #f0f2f5;
 }
 
-.header {
+.header-edit-flight {
   display: flex;
+  background-color: #69ABC1;
+  height: 15vh;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px; 
-  background-color: #69ABC1;
-}
-
-.logo img {
-  height: 60px;
-}
-
-.logo-2 {
-  width: 96px;
-  height: 88px;
-  left: 1250px;
-  top: 8px;
-  position: absolute;
-  border-radius: 50%;
-}
-
-.nav-1 {
-  background-color: white;
-  border-radius: 5px;
-  display: flex;
-  justify-content: flex-start; 
-  padding: 15px; 
-}
-
-.nav {
-  background-color: white;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.nav-button {
-  background-color: transparent;
-  color: #600;
-  border: none;
-  font-family: 'Bree-Serif';
-  font-size: 18px;
-  cursor: pointer;
-  
-}
-
-.nav-button:hover {
-  text-decoration: underline;
-}
-
-.member {
-  background-color: white;
-  color: #600;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-family: 'Bree-Serif';
-  font-weight: bold;
-  margin-left: auto;
-}
-
-.form-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-form {
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 700px;
-}
-
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.form-group {
-  flex: 1;
-}
-
-label {
-  font-family: 'Bree-Serif';
-  font-size: 14px;
-  color: #600;
-  margin-bottom: 5px;
-  display: block;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-input[type="date"] {
-  font-family: inherit;
-}
-
-.save-button {
-  background-color: #69ABC1;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  width: 100%;
-  font-size: 16px;
-  font-family: 'Bree-Serif';
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.save-button:hover {
-  background-color: #69ABC1;
-}
-
-.delete-button:hover {
-  background-color: #5F212E;
-}
-
-.delete-button {
-  background-color:  #5F212E;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  width: 100%;
-  font-size: 16px;
-  font-family: 'Bree-Serif';
-  cursor: pointer;
-  margin-top: 5px;
-  transition: background-color 0.3s ease;
-}
-
-@font-face {
-  font-family: 'Bree-Serif';
-  src: url(./assets/BreeSerif-Regular.ttf);
-} */
-
-
-/* 
-.edit-flight-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.edit-flight-form {
-  background-color: #f7f7f7;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-h2 {
-  text-align: center;
-} */
-
-
-
-
-
-
-.edit-flight-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  text-align: center;
   margin-bottom: 20px;
 }
 
-.ant-form-item {
-  margin-bottom: 16px;
+.button-group-edit-flight {
+  display: flex;
+  margin-left: 2%;
+  gap: 25px;
 }
 
-.ant-btn-primary {
-  width: 100px;
+.home-button-edit-flight {
+  margin-top: 14%;
+  margin-left: 30px;
+  background-color: #ffffff;
+  border: 2px solid #D4E9E2;
+  color: #600;
+  font-family: 'Bree Serif', serif;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.ant-btn-danger {
+.home-button-edit-flight:hover {
+  background-color: #D4E9E2;
+}
+
+.edit-flight-logo {
   width: 100px;
+  height: 85px;
+}
+
+.profile-section-edit-flight {
+  display: flex;
+  align-items: center;
+  margin-right: 3%;
+  gap: 20px;
+}
+
+.profile-image-edit-flight {
+  width: 65px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.user-name-edit-flight {
+  background-color: #ffffff;
+  font-family: 'Bree Serif', serif;
+  font-size: 16px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.form-container-edit-flight {
+  margin-left: 22%;
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 50%;
+}
+
+.save-button-edit-flight {
+  margin-top: 1%;
+  background-color: #69ABC1;
+  border-color: #69ABC1;
+  color: rgb(255, 255, 255);
+  font-family: 'Bree Serif', serif;
+  font-size: 16px;
+  padding: 8px;
+  width: 753px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.save-button-edit-flight:hover {
+  background-color: #69ABC1;
+  border-color: #69ABC1;
+}
+
+.delete-button-edit {
+  margin-top: 1%;
+  color: #ffffff !important;  /*!important คือสำคัญสุดตัดการแทรกแซงใน css*/
+  background-color: red;
+  font-family: 'Bree Serif', serif;
+  font-size: 16px;
+  padding: 8px;
+  width: 753px;
+  border-radius: 10px;
+}
+
+.delete-button-edit:hover {
+  background-color: red;
+  border-color: red;
 }

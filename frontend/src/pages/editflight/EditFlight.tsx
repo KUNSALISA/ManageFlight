@@ -1,148 +1,217 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, DatePicker, Form, notification } from 'antd';
-import { useParams, useNavigate } from 'react-router-dom';
-import moment from 'moment';
-import './editFlight.css';
+import { Form, Input, Button, DatePicker, Row, Col, Dropdown, Menu, message, InputNumber } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
+import instance from '../addflight/axiosConfig';
+import './EditFlight.css';
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
-
-interface FlightDetails {
-  flightCode: string;
-  from: string;
-  to: string;
-  start: string;
-  end: string;
-  airline: string;
-  cost: number;
-  point: number;
-}
+import moment from 'moment';
 
 const EditFlight: React.FC = () => {
-  const [flightData, setFlightData] = useState<FlightDetails | null>(null);
-  const { flightCode } = useParams<{ flightCode: string }>();
+  const [form] = Form.useForm();
+  const [airlines, setAirlines] = useState([]);
+  const [types, setTypes] = useState([]);
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>(); // ดึง ID ของไฟลท์จากพารามิเตอร์ใน URL
 
   useEffect(() => {
-    // Fetch the specific flight details based on flightCode (you can replace this with an API call)
-    const fetchFlightData = async () => {
-      const flight = {
-        flightCode: 'FL123',
-        from: 'Bangkok',
-        to: 'Tokyo',
-        start: '2024-09-10 08:00',
-        end: '2024-09-10 12:00',
-        airline: 'Thai Airways',
-        cost: 500,
-        point: 1000,
-      };
+    const fetchData = async () => {
+      try {
+        const [airlineRes, typeRes, flightRes] = await Promise.all([
+          instance.get('/airline'),
+          instance.get('/TypeOfFlight'),
+          instance.get(`/flight-details/${id}`),
+        ]);
 
-      if (flight.flightCode === flightCode) {
-        setFlightData(flight);
+        setAirlines(airlineRes.data.data);
+        setTypes(typeRes.data.data);
+
+        const flightData = flightRes.data.data;
+        form.setFieldsValue({
+          flightCode: flightData.flight_code,
+          scheduleStart: moment(flightData.schedule_start),
+          scheduleEnd: moment(flightData.schedule_end),
+          hour: flightData.hour,
+          cost: flightData.cost,
+          point: flightData.point,
+          airlineId: flightData.airline_id,
+          flyingFrom: flightData.flying_from_id,
+          goingTo: flightData.going_to_id,
+          type: flightData.type_id,
+        });
+      } catch (error) {
+        message.error('Failed to fetch data.');
       }
     };
-    fetchFlightData();
-  }, [flightCode]);
+    fetchData();
+  }, [id, form]);
 
-  const handleDelete = () => {
-    // Delete flight data based on flightCode (you can replace this with an API call)
-    notification.success({
-      message: 'Flight Deleted',
-      description: `Flight ${flightCode} has been successfully deleted.`,
-    });
-    navigate('/flight'); // Navigate back to the flight list
+  const onFinish = async (values: any) => {
+    const data = {
+      flight_code: values.flightCode,
+      schedule_start: values.scheduleStart.format('YYYY-MM-DDTHH:mm:ss[Z]'),
+      schedule_end: values.scheduleEnd.format('YYYY-MM-DDTHH:mm:ss[Z]'),
+      hour: values.hour,
+      cost: values.cost,
+      point: values.point,
+      airline_id: values.airlineId,
+      flying_from_id: values.flyingFrom,
+      going_to_id: values.goingTo,
+      type_id: values.type,
+    };
+
+    try {
+      await instance.put(`/flight-details/${id}`, data);
+      message.success('Flight updated successfully!');
+      navigate('/flight');
+    } catch (error) {
+      message.error('Failed to update flight');
+    }
   };
 
-  const handleSave = (values: FlightDetails) => {
-    // Save the edited flight details (you can replace this with an API call)
-    notification.success({
-      message: 'Flight Updated',
-      description: `Flight ${flightCode} has been successfully updated.`,
-    });
-    navigate('/flight'); // Navigate back to the flight list
+  const handleDelete = async () => {
+    try {
+      await instance.delete(`/flight-details/${id}`);
+      message.success('Flight deleted successfully!');
+      navigate('/flight');
+    } catch (error) {
+      message.error('Failed to delete flight');
+    }
   };
 
-  if (!flightData) {
-    return <div>Loading...</div>;
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('token_type');
+    navigate('/');
+  };
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" onClick={handleLogout}>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
-    <div className="edit-flight-container">
-      <h2>Edit Flight: {flightCode}</h2>
-      <Form
-        initialValues={{
-          ...flightData,
-          start: moment(flightData.start),
-          end: moment(flightData.end),
-        }}
-        onFinish={handleSave}
-      >
-        <Form.Item
-          name="flightCode"
-          label="Flight Code"
-          rules={[{ required: true, message: 'Please input flight code' }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          name="from"
-          label="Flying From"
-          rules={[{ required: true, message: 'Please input origin' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="to"
-          label="Going To"
-          rules={[{ required: true, message: 'Please input destination' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="start"
-          label="Schedule Start"
-          rules={[{ required: true, message: 'Please select start time' }]}
-        >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm" />
-        </Form.Item>
-        <Form.Item
-          name="end"
-          label="Schedule End"
-          rules={[{ required: true, message: 'Please select end time' }]}
-        >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm" />
-        </Form.Item>
-        <Form.Item
-          name="airline"
-          label="Airline"
-          rules={[{ required: true, message: 'Please input airline' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="cost"
-          label="Cost"
-          rules={[{ required: true, message: 'Please input cost' }]}
-        >
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item
-          name="point"
-          label="Point"
-          rules={[{ required: true, message: 'Please input point' }]}
-        >
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Save
-          </Button>
-          <Button type="default" danger onClick={handleDelete} style={{ marginLeft: '10px' }}>
-            Delete
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
+      <div className="edit-flight-container">
+        <div className="header-edit-flight">
+          <div className="button-group-edit-flight">
+            <img src={FFF} alt="Logo" className="edit-flight-logo" />
+            <Button className="home-button-edit-flight" shape="round" onClick={() => navigate('/flight')}>
+              Home
+            </Button>
+          </div>
+    
+          <div className="profile-section-edit-flight">
+            <img src={PPP} alt="Profile" className="profile-image-edit-flight" />
+            <span className="user-name-edit-flight">John Doe</span>
+            <Dropdown overlay={menu}>
+              <Button>
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+          </div>
+        </div>
+    
+        <div className="form-container-edit-flight">
+          <Form
+            form={form}
+            name="editFlight"
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={{
+              type: undefined,
+              flyingFrom: undefined,
+              goingTo: undefined,
+              scheduleStart: null,
+              scheduleEnd: null,
+              airlineId: undefined,
+            }}
+          >
+            {/* Form fields */}
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Flight Code" name="flightCode" rules={[{ required: true, message: 'Please input Flight Code!' }]}>
+                  <Input placeholder="Flight Code" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please select Type!' }]}>
+                  <InputNumber placeholder="Type ID" style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+    
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Flying From ID" name="flyingFrom" rules={[{ required: true, message: 'Please input the departure airport ID!' }]}>
+                  <Input placeholder="Flying From ID" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Going To ID" name="goingTo" rules={[{ required: true, message: 'Please input the destination airport ID!' }]}>
+                  <Input placeholder="Going To ID" />
+                </Form.Item>
+              </Col>
+            </Row>
+    
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Schedule Start" name="scheduleStart" rules={[{ required: true, message: 'Please select Schedule Start!' }]}>
+                  <DatePicker showTime placeholder="Select date and time" style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Schedule End" name="scheduleEnd" rules={[{ required: true, message: 'Please select Schedule End!' }]}>
+                  <DatePicker showTime placeholder="Select date and time" style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+    
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Hour" name="hour" rules={[{ required: true, message: 'Please input Hour!' }]}>
+                  <InputNumber placeholder="Hour" min={1} style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Airline ID" name="airlineId" rules={[{ required: true, message: 'Please input Airline ID!' }]}>
+                  <InputNumber placeholder="Airline ID" style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+    
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Cost" name="cost" rules={[{ required: true, message: 'Please input Cost!' }]}>
+                  <InputNumber placeholder="Cost" min={0} style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Point" name="point" rules={[{ required: true, message: 'Please input Point!' }]}>
+                  <InputNumber placeholder="Point" min={0} style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+    
+            <Form.Item>
+              <Button className="save-button-edit-flight" shape="round" htmlType="submit" block>
+                SAVE
+              </Button>
+            </Form.Item>
+    
+            <Form.Item>
+              <Button className="delete-button-edit" danger shape="round" onClick={handleDelete} block>
+                DELETE
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+    );
+    
 };
 
 export default EditFlight;
