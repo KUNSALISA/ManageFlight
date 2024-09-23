@@ -11,7 +11,7 @@ import (
 
 // func CreateFlightDetails(c *gin.Context) {
 // 	var flightDetails entity.FlightDetails
-
+ //fgtrhyt
 // 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
 // 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 // 		return
