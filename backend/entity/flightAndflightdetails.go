@@ -8,11 +8,11 @@ type FlightAndFlightDetails struct {
 	gorm.Model
 
 	FlightID *uint
-	Flight   Flight `gorm:"foriegnKey:FlightID"`
+	Flight   Flight `gorm:"foreignKey:FlightID"`
 
 	FlightDetailID *uint
-	FlightDetail   FlightDetails `gorm:"foriegnKey:FlightDetailID"`
+	FlightDetail   FlightDetails `gorm:"foreignKey:FlightDetailID"`
 
 	AdminID *uint
-	Admin   Admin `gorm:"foriegnKey:admin_id"`
+	Admin   Admin `gorm:"foreignKey:admin_id"`
 }

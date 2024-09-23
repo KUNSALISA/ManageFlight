@@ -16,16 +16,16 @@ type FlightDetails struct {
 	Point         uint16    `json:"point"`
 
 	AirlineID *uint
-	Airline   Airline `gorm:"foriegnKey:AirlineID"`
+	Airline   Airline `gorm:"foreignKey:AirlineID"`
 
 	FlyingFromID *uint
-	FlyingFrom   Airport `gorm:"foriegnKey:FlyingFromID"`
+	FlyingFrom   Airport `gorm:"foreignKey:FlyingFromID"`
 
 	GoingToID *uint
-	GoingTo   Airport `gorm:"foriegnKey:GoingToID"`
+	GoingTo   Airport `gorm:"foreignKey:GoingToID"`
 
 	TypeID *uint
-	Type   TypeOfFlight `gorm:"foriegnKey:TypeID"`
+	Type   TypeOfFlight `gorm:"foreignKey:TypeID"`
 
 	FlightDetail []FlightAndFlightDetails `gorm:"foreignKey:FlightDetailID"`
 }

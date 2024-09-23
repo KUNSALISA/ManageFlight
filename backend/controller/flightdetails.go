@@ -9,84 +9,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// func CreateFlightDetails(c *gin.Context) {
-// 	var flightDetails entity.FlightDetails
-
-// 	// ผูกข้อมูล JSON ที่ได้รับมากับ FlightDetails struct
-// 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// ตรวจสอบความถูกต้อง เช่น FlyingFromID, GoingToID
-// 	if flightDetails.FlyingFromID == nil || flightDetails.GoingToID == nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "FlyingFromID and GoingToID are required"})
-// 		return
-// 	}
-
-// 	flightDetails.CreatedAt = time.Now()
-// 	flightDetails.UpdatedAt = time.Now()
-
-// 	// บันทึกข้อมูลลงในฐานข้อมูล
-// 	if err := entity.DB().Create(&flightDetails).Error; err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// ส่งข้อมูลกลับไปยืนยัน
-// 	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
-// }
-
-// CreateFlightDetails - ฟังก์ชันสำหรับเพิ่มเที่ยวบิน
 func CreateFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
 
-	// ผูกข้อมูล JSON ที่ได้รับมากับ FlightDetails struct
 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ตรวจสอบความถูกต้องของข้อมูล
-	if flightDetails.FlightCode == "" || flightDetails.ScheduleStart.IsZero() || flightDetails.ScheduleEnd.IsZero() {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "FlightCode, ScheduleStart, and ScheduleEnd are required"})
+	if result := entity.DB().Create(&flightDetails); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 		return
 	}
 
-	// ตรวจสอบว่า FlyingFromID และ GoingToID มีค่าหรือไม่
-	if flightDetails.FlyingFromID == nil || flightDetails.GoingToID == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "FlyingFromID and GoingToID are required"})
-		return
-	}
-
-	// ตรวจสอบสนามบินต้นทาง
-	if flightDetails.FlyingFromID != nil {
-		var airport entity.Airport
-		if err := entity.DB().First(&airport, flightDetails.FlyingFromID).Error; err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"error": "FlyingFrom not found"})
-			return
-		}
-		flightDetails.FlyingFrom = airport
-	}
-
-	// ตรวจสอบสนามบินปลายทาง
-	if flightDetails.GoingToID != nil {
-		var airport entity.Airport
-		if err := entity.DB().First(&airport, flightDetails.GoingToID).Error; err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"error": "GoingTo not found"})
-			return
-		}
-		flightDetails.GoingTo = airport
-	}
-
-	// บันทึกข้อมูลลงฐานข้อมูล
-	if err := entity.DB().Create(&flightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create FlightDetails"})
-		return
-	}
-
-	// ส่งข้อมูลกลับเพื่อยืนยันการเพิ่ม
-	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
+	c.JSON(http.StatusOK, flightDetails)
 }
 
 // GetFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightDetails ทั้งหมด

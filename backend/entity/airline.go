@@ -8,5 +8,6 @@ type Airline struct {
 	gorm.Model
 	AirlineName string `json:"airline_name"`
 
-	Airline []FlightDetails `gorm:"foreignKey:AirlineID"`
+	FlightDetails []FlightDetails `gorm:"foreignKey:AirlineID"`
+
 }
