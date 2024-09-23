@@ -9,21 +9,96 @@ import (
 	"gorm.io/gorm"
 )
 
+// func CreateFlightDetails(c *gin.Context) {
+// 	var flightDetails entity.FlightDetails
+
+// 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	if result := entity.DB().Create(&flightDetails); result.Error != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, flightDetails)
+// }
+
+// func CreateFlightDetails(c *gin.Context) {
+// 	var flightDetails entity.FlightDetails
+
+// 	// bind เข้าตัวแปร flightDetails
+// 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	db := entity.DB()
+
+// 	// ใช้ค่าจาก flightDetails แทน FlightDetails (ตัวอักษรเล็ก)
+// 	u := entity.FlightDetails{
+// 		FlightCode:    flightDetails.FlightCode,
+// 		ScheduleStart: flightDetails.ScheduleStart,
+// 		ScheduleEnd:   flightDetails.ScheduleEnd,
+// 		Hour:          flightDetails.Hour,
+// 		Cost:          flightDetails.Cost,
+// 		Point:         flightDetails.Point,
+
+// 		AirlineID:     flightDetails.AirlineID,
+// 		Airline:       flightDetails.Airline,
+
+// 		FlyingFromID:  flightDetails.FlyingFromID,
+// 		FlyingFrom:    flightDetails.FlyingFrom,
+
+// 		GoingToID:     flightDetails.GoingToID,
+// 		GoingTo:       flightDetails.GoingTo,
+
+// 		TypeID:        flightDetails.TypeID,
+// 		Type:          flightDetails.Type,
+// 	}
+
+// 	// บันทึก
+// 	if err := db.Create(&u).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusCreated, gin.H{"message": "Created success", "data": u})
+// }
 func CreateFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
 
+	// bind เข้าตัวแปร flightDetails
 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if result := entity.DB().Create(&flightDetails); result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	db := entity.DB()
+
+	// บันทึกข้อมูล flightDetails ลงฐานข้อมูล
+	if err := db.Create(&flightDetails).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, flightDetails)
+	// โหลดข้อมูลที่สัมพันธ์กัน เช่น Airline, FlyingFrom, GoingTo, และ Type
+	if err := db.Preload("Airline").Preload("FlyingFrom").Preload("GoingTo").Preload("Type").First(&flightDetails, flightDetails.ID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// ส่งข้อมูลที่สร้างสำเร็จกลับในรูป JSON พร้อมข้อมูลที่สัมพันธ์กัน
+	c.JSON(http.StatusCreated, gin.H{"message": "Created success", "data": flightDetails})
 }
+
+
+
+
+
+
+
 
 // GetFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightDetails ทั้งหมด
 func GetFlightDetails(c *gin.Context) {
