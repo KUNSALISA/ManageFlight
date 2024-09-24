@@ -1,28 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, DatePicker, Row, Col, Dropdown, Menu, message, InputNumber } from 'antd';
+import { Form, Input, Button, DatePicker, Row, Col, Dropdown, Menu, message, Select, InputNumber } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import instance from './axiosConfig';
 import './AddFlight.css';
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
-import {FlightDetailsInterface} from '../../interfaces/fullmanageflight'
+import { FlightDetailsInterface } from '../../interfaces/fullmanageflight';
+
+const { Option } = Select;
 
 const AddFlight: React.FC = () => {
-  const [form] = Form.useForm();
-  const [airlines, setAirlines] = useState([]);
-  const [types, setTypes] = useState([]);
+  const [form] = Form.useForm<FlightDetailsInterface>(); // Set form type to FlightDetailsInterface
+  const [airlines, setAirlines] = useState<any[]>([]);
+  const [types, setTypes] = useState<any[]>([]);
+  const [airports, setAirports] = useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [airlineRes, typeRes] = await Promise.all([
+        const [airlineRes, typeRes, airportRes] = await Promise.all([
           instance.get('/airline'),
           instance.get('/TypeOfFlight'),
+          instance.get('/airport'), // Fetch airports
         ]);
         setAirlines(airlineRes.data.data);
         setTypes(typeRes.data.data);
+        setAirports(airportRes.data.data); // Set airports
       } catch (error) {
         message.error('Failed to fetch data.');
       }
@@ -30,18 +35,18 @@ const AddFlight: React.FC = () => {
     fetchData();
   }, []);
 
-  const onFinish = async (values: FlightDetailsInterface) => {  //interface และ struc
+  const onFinish = async (values: FlightDetailsInterface) => {
     const data = {
-      flight_code: values.FlightCode, 
-      schedule_start: values.scheduleStart.format('YYYY-MM-DDTHH:mm:ss[Z]'),
-      schedule_end: values.scheduleEnd.format('YYYY-MM-DDTHH:mm:ss[Z]'),
-      hour: values.hour,
-      cost: values.cost,
-      point: values.point,
-      airline_id: values.airlineId,
-      flying_from_id: values.flyingFrom, 
-      going_to_id: values.goingTo,       
-      type_id: values.type,
+      flight_code: values.FlightCode,
+      schedule_start: values.ScheduleStart, // Assuming the date is already in the correct format
+      schedule_end: values.ScheduleEnd, // Assuming the date is already in the correct format
+      hour: values.Hour,
+      cost: values.Cost,
+      point: values.Point,
+      airline_id: values.AirlineID,
+      flying_from_id: values.FlyingFromID,
+      going_to_id: values.GoingToID,
+      type_id: values.TypeID,
     };
 
     try {
@@ -100,23 +105,27 @@ const AddFlight: React.FC = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           initialValues={{
-            type: undefined,
-            flyingFrom: undefined,
-            goingTo: undefined,
-            scheduleStart: null,
-            scheduleEnd: null,
-            airlineId: undefined,
+            TypeID: undefined,
+            FlyingFromID: undefined,
+            GoingToID: undefined,
+            ScheduleStart: null,
+            ScheduleEnd: null,
+            AirlineID: undefined,
           }}
         >
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Flight Code" name="flightCode" rules={[{ required: true, message: 'Please input Flight Code!' }]}>  
+              <Form.Item label="Flight Code" name="FlightCode" rules={[{ required: true, message: 'Please input Flight Code!' }]}>
                 <Input placeholder="Flight Code" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please select Type!' }]}>
-                <InputNumber placeholder="Type ID" style={{ width: '100%' }} />
+              <Form.Item label="Type" name="TypeID" rules={[{ required: true, message: 'Please select Type!' }]}>
+                <Select placeholder="Select Type">
+                  {types.map(type => (
+                    <Option key={type.id} value={type.id}>{type.name}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -124,32 +133,40 @@ const AddFlight: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item 
-                label="Flying From ID" 
-                name="flyingFrom" 
-                rules={[{ required: true, message: 'Please input the departure airport ID!' }]}
+                label="Flying From" 
+                name="FlyingFromID" 
+                rules={[{ required: true, message: 'Please select the departure airport!' }]}
               >
-                <Input placeholder="Flying From ID" />
+                <Select placeholder="Select Departure Airport">
+                  {airports.map(airport => (
+                    <Option key={airport.id} value={airport.id}>{airport.name}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item 
-                label="Going To ID" 
-                name="flyingFrom" 
-                rules={[{ required: true, message: 'Please input the destination airport ID!' }]}
+                label="Going To" 
+                name="GoingToID" 
+                rules={[{ required: true, message: 'Please select the destination airport!' }]}
               >
-                <Input placeholder="Going To ID" />
+                <Select placeholder="Select Destination Airport">
+                  {airports.map(airport => (
+                    <Option key={airport.id} value={airport.id}>{airport.name}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Schedule Start" name="scheduleStart" rules={[{ required: true, message: 'Please select Schedule Start!' }]}>
+              <Form.Item label="Schedule Start" name="ScheduleStart" rules={[{ required: true, message: 'Please select Schedule Start!' }]}>
                 <DatePicker showTime placeholder="Select date and time" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Schedule End" name="scheduleEnd" rules={[{ required: true, message: 'Please select Schedule End!' }]}>
+              <Form.Item label="Schedule End" name="ScheduleEnd" rules={[{ required: true, message: 'Please select Schedule End!' }]}>
                 <DatePicker showTime placeholder="Select date and time" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
@@ -157,25 +174,29 @@ const AddFlight: React.FC = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Hour" name="hour" rules={[{ required: true, message: 'Please input Hour!' }]}>
+              <Form.Item label="Hour" name="Hour" rules={[{ required: true, message: 'Please input Hour!' }]}>
                 <InputNumber placeholder="Hour" min={1} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Airline ID" name="airlineId" rules={[{ required: true, message: 'Please input Airline ID!' }]}>
-                <InputNumber placeholder="Airline ID" style={{ width: '100%' }} />
+              <Form.Item label="Airline" name="AirlineID" rules={[{ required: true, message: 'Please select Airline!' }]}>
+                <Select placeholder="Select Airline">
+                  {airlines.map(airline => (
+                    <Option key={airline.id} value={airline.id}>{airline.name}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Cost" name="cost" rules={[{ required: true, message: 'Please input Cost!' }]}>
+              <Form.Item label="Cost" name="Cost" rules={[{ required: true, message: 'Please input Cost!' }]}>
                 <InputNumber placeholder="Cost" min={0} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Point" name="point" rules={[{ required: true, message: 'Please input Point!' }]}>
+              <Form.Item label="Point" name="Point" rules={[{ required: true, message: 'Please input Point!' }]}>
                 <InputNumber placeholder="Point" min={0} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
@@ -193,6 +214,3 @@ const AddFlight: React.FC = () => {
 };
 
 export default AddFlight;
-
-
-//From name = "struc"

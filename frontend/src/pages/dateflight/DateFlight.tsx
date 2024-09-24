@@ -59,7 +59,7 @@ const FlightTable: React.FC = () => {
       dataIndex: "schedule_start",
       key: "schedule_start",
       render: (schedule_start) => (
-        <p>{dayjs(schedule_start).format("HH:mm : DD MMM YYYY")}</p>
+        <p>{dayjs(schedule_start).format("HH:mm:ss")}</p>
       ),
     },
     {
@@ -67,7 +67,7 @@ const FlightTable: React.FC = () => {
       dataIndex: "schedule_end",
       key: "schedule_end",
       render: (schedule_end) => (
-        <p>{dayjs(schedule_end).format("HH:mm : DD MMM YYYY")}</p>
+        <p>{dayjs(schedule_end).format("HH:mm:ss")}</p>
       ),
     },
     {

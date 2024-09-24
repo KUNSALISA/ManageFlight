@@ -12,9 +12,15 @@ import (
 func CreateFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
 
-	// bind เข้าตัวแปร flightDetails
+	// Bind incoming JSON to flightDetails struct
 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validate ScheduleStart and ScheduleEnd
+	if flightDetails.ScheduleStart.IsZero() || flightDetails.ScheduleEnd.IsZero() {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ScheduleStart and ScheduleEnd are required"})
 		return
 	}
 
@@ -23,12 +29,13 @@ func CreateFlightDetails(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	if err := db.Preload("Airline").Preload("FlyingFrom").Preload("GoingTo").Preload("Type").First(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Created success", "data": flightDetails})
+	c.JSON(http.StatusCreated, gin.H{"message": "Created successfully", "data": flightDetails})
 }
 
 // GetFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightDetails ทั้งหมด
@@ -73,29 +80,23 @@ func UpdateFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
 	id := c.Param("id")
 
-	// ค้นหาข้อมูล FlightDetails ตาม ID
 	if err := entity.DB().First(&flightDetails, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "FlightDetails not found"})
 		return
 	}
 
-	// ผูกข้อมูลใหม่จาก JSON ไปยัง struct flightDetails
 	var input entity.FlightDetails
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ตรวจสอบว่า FlyingFromID และ GoingToID มีค่าหรือไม่
 	if input.FlyingFromID == nil || input.GoingToID == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "FlyingFromID and GoingToID are required"})
 		return
 	}
 
-	// ล็อก ID ไม่ให้เปลี่ยนแปลง
-	input.ID = flightDetails.ID
-
-	// อัปเดตฟิลด์ต่างๆ
+	// Update fields
 	flightDetails.FlightCode = input.FlightCode
 	flightDetails.ScheduleStart = input.ScheduleStart
 	flightDetails.ScheduleEnd = input.ScheduleEnd
@@ -108,13 +109,11 @@ func UpdateFlightDetails(c *gin.Context) {
 	flightDetails.TypeID = input.TypeID
 	flightDetails.UpdatedAt = time.Now()
 
-	// บันทึกข้อมูลที่อัปเดตลงฐานข้อมูล
 	if err := entity.DB().Save(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ส่งข้อมูลที่อัปเดตกลับไปในรูป JSON
 	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
 }
 
@@ -122,16 +121,13 @@ func DeleteFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
 	id := c.Param("id")
 
-	// ค้นหาข้อมูล FlightDetails ตาม ID
 	if err := entity.DB().First(&flightDetails, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "FlightDetails not found"})
 		return
 	}
 
-	// ลบข้อมูล FlightDetails จากฐานข้อมูล
 	result := entity.DB().Delete(&flightDetails)
 
-	// ตรวจสอบว่ามีการลบสำเร็จหรือไม่
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 		return
@@ -142,6 +138,5 @@ func DeleteFlightDetails(c *gin.Context) {
 		return
 	}
 
-	// ส่งข้อความยืนยันการลบ
 	c.JSON(http.StatusOK, gin.H{"message": "FlightDetails deleted successfully"})
 }

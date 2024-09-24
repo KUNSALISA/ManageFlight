@@ -4,6 +4,7 @@ import { Table, Button, Input, DatePicker, Space, Dropdown, Menu } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons";
 import moment, { Moment } from "moment";
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
@@ -85,11 +86,17 @@ const FlightTable: React.FC = () => {
       title: "Schedule Start",
       dataIndex: "schedule_start",
       key: "schedule_start",
+      render: (schedule_start) => (
+        <p>{dayjs(schedule_start).format("HH:mm:ss")}</p>
+      ),
     },
     {
       title: "Schedule End",
       dataIndex: "schedule_end",
       key: "schedule_end",
+      render: (schedule_start) => (
+        <p>{dayjs(schedule_start).format("HH:mm:ss")}</p>
+      ),
     },
     {
       title: "Airline",

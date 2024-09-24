@@ -7,17 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// func GetTypeOfFlight(c *gin.Context) {
-// 	var types []entity.TypeOfFlight
-// 	db := entity.DB()
-
-// 	results := db.Select("*").Find(&types)
-// 	if results.Error != nil {
-// 		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, types)
-// }
 
 func GetTypeOfFlight(c *gin.Context) {
 	var types []entity.TypeOfFlight
@@ -27,6 +16,7 @@ func GetTypeOfFlight(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": types})
 }
+
 
 func GetTypeOfFlightByID(c *gin.Context) {
 	var types entity.TypeOfFlight
