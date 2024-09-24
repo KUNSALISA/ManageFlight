@@ -10,7 +10,7 @@ import (
 func GetAirline(c *gin.Context) {
 	var airlines []entity.Airline
 
-	if err := entity.DB().Preload("FlightDetails").Find(&airlines).Error; err != nil {
+	if err := entity.DB().Find(&airlines).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -22,7 +22,7 @@ func GetAirlineByID(c *gin.Context) {
 	var airline entity.Airline
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("FlightDetails").First(&airline, id).Error; err != nil {
+	if err := entity.DB().First(&airline, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Airline not found"})
 		return
 	}

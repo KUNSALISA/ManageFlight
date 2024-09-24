@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Button, Input, DatePicker, Space, Dropdown, Menu } from "antd";
+import { Table, Button, Input, Space, Dropdown, Menu } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
@@ -26,34 +26,30 @@ export interface FlightDetail {
   GoingTo: {
     airport_code: string;
   };
-  date: string; // Assuming this is the date of the flight
 }
 
 const FlightTable: React.FC = () => {
   const [flights, setFlights] = useState<FlightDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
   const navigate = useNavigate();
 
-  // Fetch flight details from SQLite backend API
+  // Fetch flight details from the backend API
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await axios.get("http://localhost:8080/flight-and-flight-details");
-        // Map the data to the structure you need
         const flightData = response.data.data.map((item: any) => ({
           ID: item.ID,
           FlightDetailID: item.FlightDetailID,
-          FlightDate: moment(item.FlightDate).format("YYYY-MM-DD"),
+          FlightDate: moment(item.flight_date).format("YYYY-MM-DD"),
           flight_code: item.FlightDetail.flight_code,
           schedule_start: moment(item.FlightDetail.schedule_start).format("YYYY-MM-DD HH:mm"),
           schedule_end: moment(item.FlightDetail.schedule_end).format("YYYY-MM-DD HH:mm"),
           Airline: item.FlightDetail.Airline,
           FlyingFrom: item.FlightDetail.FlyingFrom,
           GoingTo: item.FlightDetail.GoingTo,
-          date: item.FlightDate // Assuming you want to keep this field as well
         }));
         setFlights(flightData);
       } catch (error) {
@@ -94,8 +90,8 @@ const FlightTable: React.FC = () => {
       title: "Schedule End",
       dataIndex: "schedule_end",
       key: "schedule_end",
-      render: (schedule_start) => (
-        <p>{dayjs(schedule_start).format("HH:mm:ss")}</p>
+      render: (schedule_end) => (
+        <p>{dayjs(schedule_end).format("HH:mm:ss")}</p>
       ),
     },
     {
@@ -104,8 +100,8 @@ const FlightTable: React.FC = () => {
       render: (record) => <>{record.Airline?.airline_name || "N/A"}</>,
     },
     {
-      title: "Date",
-      dataIndex: "FlightDate",
+      title: "Flight Date",
+      dataIndex: "FlightDate",  // Displaying flight_date from API
       key: "FlightDate",
     },
     {
@@ -113,18 +109,15 @@ const FlightTable: React.FC = () => {
       key: "action",
       render: (text, record) => (
         <Button className="edit-button" onClick={() => navigate(`/edit-flight/${record.ID}`)}>
-        EDIT
+          EDIT
         </Button>
       ),
     },
   ];
 
-  // Filter data based on search text and date
+  // Filter data based on search text
   const filteredFlights = flights.filter((flight) => {
-    const matchesFlightCode = flight.flight_code.toLowerCase().includes(searchText.toLowerCase());
-    const matchesDate =
-      selectedDate === null || moment(flight.schedule_start).isSame(selectedDate, "day");
-    return matchesFlightCode && matchesDate;
+    return flight.flight_code.toLowerCase().includes(searchText.toLowerCase());
   });
 
   // Function to handle logout
@@ -169,11 +162,6 @@ const FlightTable: React.FC = () => {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             prefix={<SearchOutlined />}
-          />
-          <DatePicker
-            onChange={(date) => setSelectedDate(date)}
-            value={selectedDate}
-            format="YYYY-MM-DD"
           />
         </Space>
       </div>

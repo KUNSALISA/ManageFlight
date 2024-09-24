@@ -6,15 +6,15 @@ import instance from './axiosConfig';
 import './AddFlight.css';
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
-import { FlightDetailsInterface } from '../../interfaces/fullmanageflight';
+import { FlightDetailsInterface, TypeOfFlightInterface, AirlineInterface, AirportInterface } from '../../interfaces/fullmanageflight';
 
 const { Option } = Select;
 
 const AddFlight: React.FC = () => {
-  const [form] = Form.useForm<FlightDetailsInterface>(); // Set form type to FlightDetailsInterface
-  const [airlines, setAirlines] = useState<any[]>([]);
-  const [types, setTypes] = useState<any[]>([]);
-  const [airports, setAirports] = useState<any[]>([]);
+  const [form] = Form.useForm<FlightDetailsInterface>();
+  const [airlines, setAirlines] = useState<AirlineInterface[]>([]);
+  const [types, setTypes] = useState<TypeOfFlightInterface[]>([]);
+  const [airports, setAirports] = useState<AirportInterface[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,11 +23,11 @@ const AddFlight: React.FC = () => {
         const [airlineRes, typeRes, airportRes] = await Promise.all([
           instance.get('/airline'),
           instance.get('/TypeOfFlight'),
-          instance.get('/airport'), // Fetch airports
+          instance.get('/airport'),
         ]);
         setAirlines(airlineRes.data.data);
         setTypes(typeRes.data.data);
-        setAirports(airportRes.data.data); // Set airports
+        setAirports(airportRes.data.data);
       } catch (error) {
         message.error('Failed to fetch data.');
       }
@@ -38,8 +38,8 @@ const AddFlight: React.FC = () => {
   const onFinish = async (values: FlightDetailsInterface) => {
     const data = {
       flight_code: values.FlightCode,
-      schedule_start: values.ScheduleStart, // Assuming the date is already in the correct format
-      schedule_end: values.ScheduleEnd, // Assuming the date is already in the correct format
+      schedule_start: values.ScheduleStart,
+      schedule_end: values.ScheduleEnd,
       hour: values.Hour,
       cost: values.Cost,
       point: values.Point,
@@ -77,7 +77,7 @@ const AddFlight: React.FC = () => {
   );
 
   return (
-    <div className="add-fligth-container">
+    <div className="add-flight-container">
       <div className="header-addf">
         <div className="button-group-addflight">
           <img src={FFF} alt="Logo" className="addf-logo" />
@@ -123,7 +123,7 @@ const AddFlight: React.FC = () => {
               <Form.Item label="Type" name="TypeID" rules={[{ required: true, message: 'Please select Type!' }]}>
                 <Select placeholder="Select Type">
                   {types.map(type => (
-                    <Option key={type.id} value={type.id}>{type.name}</Option>
+                    <Option key={type.ID} value={type.ID}>{type.TypeFlight}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -139,7 +139,7 @@ const AddFlight: React.FC = () => {
               >
                 <Select placeholder="Select Departure Airport">
                   {airports.map(airport => (
-                    <Option key={airport.id} value={airport.id}>{airport.name}</Option>
+                    <Option key={airport.ID} value={airport.ID}>{airport.AirportName}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -152,7 +152,7 @@ const AddFlight: React.FC = () => {
               >
                 <Select placeholder="Select Destination Airport">
                   {airports.map(airport => (
-                    <Option key={airport.id} value={airport.id}>{airport.name}</Option>
+                    <Option key={airport.ID} value={airport.ID}>{airport.AirportName}</Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -182,7 +182,7 @@ const AddFlight: React.FC = () => {
               <Form.Item label="Airline" name="AirlineID" rules={[{ required: true, message: 'Please select Airline!' }]}>
                 <Select placeholder="Select Airline">
                   {airlines.map(airline => (
-                    <Option key={airline.id} value={airline.id}>{airline.name}</Option>
+                    <Option key={airline.ID} value={airline.ID}>{airline.AirlineName}</Option>
                   ))}
                 </Select>
               </Form.Item>

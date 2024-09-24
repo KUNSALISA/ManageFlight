@@ -69,8 +69,10 @@
 
 
 .filter-section-addf-fd {
-  margin-bottom: 2%;
+  margin-bottom: 1%;
   padding: 1% 2%;
+  margin-left: 70%;
+  margin-right: -70%;
 }
 
 .date-picker-addf-fd {
@@ -84,18 +86,5 @@
 
 .filter-table-fd {
   padding: 0% 1%;
-} */
+} 
 
-
- /* body {
-  font-family: Arial, sans-serif;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.ant-table {
-  margin-top: 20px;
-} */
