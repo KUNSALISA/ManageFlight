@@ -6,6 +6,7 @@ import instance from './axiosConfig';
 import './AddFlight.css';
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
+import {FlightDetailsInterface} from '../../interfaces/fullmanageflight'
 
 const AddFlight: React.FC = () => {
   const [form] = Form.useForm();
@@ -29,17 +30,17 @@ const AddFlight: React.FC = () => {
     fetchData();
   }, []);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: FlightDetailsInterface) => {  //interface และ struc
     const data = {
-      flight_code: values.flightCode,
+      flight_code: values.FlightCode, 
       schedule_start: values.scheduleStart.format('YYYY-MM-DDTHH:mm:ss[Z]'),
       schedule_end: values.scheduleEnd.format('YYYY-MM-DDTHH:mm:ss[Z]'),
       hour: values.hour,
       cost: values.cost,
       point: values.point,
       airline_id: values.airlineId,
-      flying_from_id: values.flyingFrom, // ID input for Flying From
-      going_to_id: values.goingTo,       // ID input for Going To
+      flying_from_id: values.flyingFrom, 
+      going_to_id: values.goingTo,       
       type_id: values.type,
     };
 
@@ -109,7 +110,7 @@ const AddFlight: React.FC = () => {
         >
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Flight Code" name="flightCode" rules={[{ required: true, message: 'Please input Flight Code!' }]}>
+              <Form.Item label="Flight Code" name="flightCode" rules={[{ required: true, message: 'Please input Flight Code!' }]}>  
                 <Input placeholder="Flight Code" />
               </Form.Item>
             </Col>
@@ -133,7 +134,7 @@ const AddFlight: React.FC = () => {
             <Col span={12}>
               <Form.Item 
                 label="Going To ID" 
-                name="goingTo" 
+                name="flyingFrom" 
                 rules={[{ required: true, message: 'Please input the destination airport ID!' }]}
               >
                 <Input placeholder="Going To ID" />
@@ -192,3 +193,6 @@ const AddFlight: React.FC = () => {
 };
 
 export default AddFlight;
+
+
+//From name = "struc"

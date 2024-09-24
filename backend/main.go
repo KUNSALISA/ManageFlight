@@ -22,13 +22,6 @@ func main() {
 	r.POST("/login", controller.LoginByUsername)
 	r.POST("/register", controller.RegisterAdmin)
 
-	// Flight routes
-	r.POST("/flights", controller.CreateFlight)
-	r.GET("/flights", controller.GetFlights)
-	r.GET("/flights/:id", controller.GetFlightByID)
-	r.PUT("/flights/:id", controller.UpdateFlight)
-	r.DELETE("/flights/:id", controller.DeleteFlight)
-
 	// Airline routes
 	r.GET("/airline", controller.GetAirline)
 	r.GET("/airline/:ID", controller.GetAirlineByID)

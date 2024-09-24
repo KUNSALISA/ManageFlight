@@ -28,7 +28,6 @@ func SetupDatabase() {
 		&Admin{},
 		&Airline{},
 		&Airport{},
-		&Flight{},
 		&FlightAndFlightDetails{},
 		&FlightDetails{},
 		&TypeOfFlight{},
@@ -85,15 +84,6 @@ func SetupDatabase() {
 	}
 	for _, airport := range airports {
 		db.FirstOrCreate(&airport, Airport{AirportName: airport.AirportName})
-	}
-
-	flights := []Flight{
-		{FlightDate: time.Date(2023, 9, 10, 0, 0, 0, 0, time.UTC)},
-		{FlightDate: time.Date(2023, 10, 5, 0, 0, 0, 0, time.UTC)},
-		{FlightDate: time.Date(2023, 11, 20, 0, 0, 0, 0, time.UTC)},
-	}
-	for _, flight := range flights {
-		db.FirstOrCreate(&flight, Flight{FlightDate: flight.FlightDate})
 	}
 
 	// Fetch existing data from the database for references
@@ -159,28 +149,22 @@ func SetupDatabase() {
 			Assign(flightDetail).FirstOrCreate(&flightDetail)
 	}
 
-	// Fetch flight, flight detail, and admin data
-	var flight Flight
-	var flightDetail FlightDetails
-	var admin Admin
+	// // Fetch flight, flight detail, and admin data
+	// var flightDetail FlightDetails
+	// var admin Admin
 
-	db.First(&flight, "flight_date = ?", time.Date(2023, 9, 10, 0, 0, 0, 0, time.UTC))
-	db.First(&flightDetail, "flight_code = ?", "AA102")
-	db.First(&admin, "email = ?", "Admin@gmail.com")
+	// db.First(&flightDetail, "flight_code = ?", "AA102")
+	// db.First(&admin, "email = ?", "Admin@gmail.com")
 
-	flightAndDetails := []FlightAndFlightDetails{
-		{
-			// FlightID:       &flight.ID,
-			// FlightDetailID: &flightDetail.ID,
-			// AdminID:        &admin.ID,
-			FlightID:       UintPtr(2),
-			FlightDetailID: UintPtr(3),
-			AdminID:        UintPtr(1),
-		},
-	}
+	// flightAndDetails := []FlightAndFlightDetails{
+	// 	{
+	// 		FlightDetailID: UintPtr(3),
+	// 		AdminID:        UintPtr(1),
+	// 	},
+	// }
 
-	// Insert flight and flight details data
-	for _, ffd := range flightAndDetails {
-		db.Create(&ffd)
-	}
+	// // Insert flight and flight details data
+	// for _, ffd := range flightAndDetails {
+	// 	db.Create(&ffd)
+	// }
 }

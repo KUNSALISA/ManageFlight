@@ -64,17 +64,10 @@ export interface AirportInterface {
     AirportCode: string;
 }
 
-// Flight Interface
-export interface FlightInterface {
-    ID?: number;
-    FlightDate: string;
-}
-
 // FlightAndFlightDetails Interface
 export interface FlightAndFlightDetailsInterface {
     ID?: number;
-    FlightID?: number;
-    Flight?: FlightInterface;
+    FlightDate: string;
     FlightDetailID?: number;
     FlightDetail?: FlightDetailsInterface;
     AdminID?: number;

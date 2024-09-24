@@ -19,20 +19,15 @@ func CreateFlightDetails(c *gin.Context) {
 	}
 
 	db := entity.DB()
-
-	// บันทึกข้อมูล flightDetails ลงฐานข้อมูล
 	if err := db.Create(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	// โหลดข้อมูลที่สัมพันธ์กัน เช่น Airline, FlyingFrom, GoingTo, และ Type
 	if err := db.Preload("Airline").Preload("FlyingFrom").Preload("GoingTo").Preload("Type").First(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// ส่งข้อมูลที่สร้างสำเร็จกลับในรูป JSON พร้อมข้อมูลที่สัมพันธ์กัน
 	c.JSON(http.StatusCreated, gin.H{"message": "Created success", "data": flightDetails})
 }
 

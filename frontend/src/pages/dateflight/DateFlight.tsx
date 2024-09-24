@@ -1,12 +1,9 @@
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Button, Input, DatePicker, Row, Col, Dropdown, Menu } from "antd";
+import { Table, Button, Input, Row, Col, Modal, DatePicker, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import moment, { Moment } from "moment";
-import { SearchOutlined, DownOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
@@ -35,9 +32,9 @@ const FlightTable: React.FC = () => {
   const [flights, setFlights] = useState<FlightDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [allSelected, setAllSelected] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<any>(null); // Popup selected date
   const navigate = useNavigate();
 
   // Table columns definition
@@ -101,46 +98,48 @@ const FlightTable: React.FC = () => {
     fetchData();
   }, []);
 
-  // Filter data based on search text and date
-  const filteredFlights = flights.filter((flight) => {
-    const matchesFlightCode = flight.flight_code.toLowerCase().includes(searchText.toLowerCase());
-    const matchesDate =
-      selectedDate === null || moment(flight.schedule_start).isSame(selectedDate, "day");
-    return matchesFlightCode && matchesDate;
-  });
+  // Filter flights based on search text
+  const filteredFlights = flights.filter((flight) =>
+    flight.flight_code.toLowerCase().includes(searchText.toLowerCase())
+  );
 
-  // Handle selection of all rows
-  const handleSelectAll = () => {
-    if (allSelected) {
-      setSelectedRowKeys([]);
-    } else {
-      const allKeys = flights.map((flight) => flight.ID);
-      setSelectedRowKeys(allKeys);
-    }
-    setAllSelected(!allSelected);
-  };
-
-  const handleAdd = async () => {
-    if (!selectedDate) {
-      alert("Please select a date.");
+  // Handle showing the modal for date selection
+  const handleAdd = () => {
+    if (selectedRowKeys.length === 0) {
+      message.error("Please select at least one flight.");
       return;
     }
-  
+    setIsModalVisible(true);
+  };
+
+  // Handle saving selected flights with the chosen date
+  const handleSave = async () => {
+    if (!selectedDate) {
+      message.error("Please select a date.");
+      return;
+    }
+
     const payload = {
-      date: selectedDate.format("YYYY-MM-DD"),  // ส่งวันที่ที่เลือก
-      flightIDs: selectedRowKeys,              // ส่งรายการของ Flight ID ที่เลือก
-      adminID: 1,  // สมมุติว่า AdminID เป็น 1 สำหรับการทดสอบ
+      date: selectedDate.format("YYYY-MM-DD"),
+      flightIDs: selectedRowKeys,
+      adminID: 1,  // Assuming adminID 1 for testing
     };
-  
+
     try {
-      const response = await axios.post("http://localhost:8080/create-flight-and-details", payload);
+      const response = await axios.post("http://localhost:8080/flight-and-flight-details", payload);
       console.log("Response:", response.data);
-      alert("Flights added successfully!");
+      message.success("Flights saved successfully!");
+      setIsModalVisible(false);
     } catch (error) {
-      console.error("Error adding flights:", error);
+      console.error("Error saving flights:", error);
+      message.error("Failed to save flights.");
     }
   };
-  
+
+  // Close modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   // Logout logic
   const handleLogout = () => {
@@ -148,14 +147,6 @@ const FlightTable: React.FC = () => {
     localStorage.removeItem('token_type');
     navigate('/');
   };
-
-  const menu = (
-    <Menu>
-      <Menu.Item key="1" onClick={handleLogout}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
 
   return (
     <div className="container-dateflight-fd">
@@ -169,11 +160,7 @@ const FlightTable: React.FC = () => {
         <div className="profile-section-addf-fd">
           <img src={PPP} alt="Profile" className="profile-image-addf-fd" />
           <span className="user-name-addf-fd">John Doe</span>
-          <Dropdown overlay={menu}>
-            <Button>
-              <DownOutlined />
-            </Button>
-          </Dropdown>
+          <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
 
@@ -181,24 +168,12 @@ const FlightTable: React.FC = () => {
       <div className="filter-section-addf-fd">
         <Row gutter={16}>
           <Col span={4}>
-            <DatePicker
-              placeholder="Select Date"
-              className="date-picker-addf-fd"
-              onChange={(date) => setSelectedDate(date)}
-            />
-          </Col>
-          <Col span={4}>
             <Input
               placeholder="Search Flight Code"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               prefix={<SearchOutlined />}
             />
-          </Col>
-          <Col span={2}>
-            <Button onClick={handleSelectAll} className="all-button-addf-fd">
-              {allSelected ? "Unselect All" : "ALL"}
-            </Button>
           </Col>
           <Col span={2}>
             <Button onClick={handleAdd} className="add-button-addf-fd">
@@ -222,10 +197,21 @@ const FlightTable: React.FC = () => {
           pagination={{ pageSize: 5 }}
         />
       </div>
+
+      {/* Modal for Date Selection */}
+      <Modal
+        title="Select Date"
+        visible={isModalVisible}
+        onOk={handleSave}
+        onCancel={handleCancel}
+      >
+        <DatePicker
+          placeholder="Select Date"
+          onChange={(date) => setSelectedDate(date)}
+        />
+      </Modal>
     </div>
   );
 };
 
 export default FlightTable;
-
-

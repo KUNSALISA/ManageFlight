@@ -1,14 +1,15 @@
 package entity
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
 type FlightAndFlightDetails struct {
 	gorm.Model
 
-	FlightID *uint
-	Flight   Flight `gorm:"foreignKey:FlightID"`
+	FlightDate time.Time `json:"flight_date"`
 
 	FlightDetailID *uint
 	FlightDetail   FlightDetails `gorm:"foreignKey:FlightDetailID"`
