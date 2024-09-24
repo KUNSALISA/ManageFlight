@@ -23,12 +23,14 @@ const EditFlight: React.FC = () => {
   const [form] = Form.useForm();
   const [airlines, setAirlines] = useState([]);
   const [types, setTypes] = useState([]);
+  const [loading, setLoading] = useState(false); // Loading state for better UX
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>(); // Get flight ID from URL parameters
 
   // Fetching data for airlines, types, and specific flight by ID
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Start loading
       try {
         const [airlineRes, typeRes, flightRes] = await Promise.all([
           instance.get('/airline'),
@@ -40,9 +42,11 @@ const EditFlight: React.FC = () => {
         setTypes(typeRes.data.data);
 
         const flightData = flightRes.data.data;
+
+        // Set form values based on fetched flight data
         form.setFieldsValue({
           flightCode: flightData.flight_code,
-          scheduleStart: moment(flightData.schedule_start),
+          scheduleStart: moment(flightData.schedule_start), // Ensure proper moment format
           scheduleEnd: moment(flightData.schedule_end),
           hour: flightData.hour,
           cost: flightData.cost,
@@ -53,7 +57,9 @@ const EditFlight: React.FC = () => {
           type: flightData.type_id,
         });
       } catch (error) {
-        message.error('Failed to fetch data.');
+        message.error('Failed to fetch flight data.');
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
     fetchData();
@@ -63,7 +69,7 @@ const EditFlight: React.FC = () => {
   const onFinish = async (values: any) => {
     const data = {
       flight_code: values.flightCode,
-      schedule_start: values.scheduleStart.format('YYYY-MM-DDTHH:mm:ss[Z]'),
+      schedule_start: values.scheduleStart.format('YYYY-MM-DDTHH:mm:ss[Z]'), // Proper date format
       schedule_end: values.scheduleEnd.format('YYYY-MM-DDTHH:mm:ss[Z]'),
       hour: values.hour,
       cost: values.cost,
@@ -74,23 +80,30 @@ const EditFlight: React.FC = () => {
       type_id: values.type,
     };
 
+    setLoading(true); // Start loading during submission
+
     try {
       await instance.put(`/flight-details/${id}`, data);
       message.success('Flight updated successfully!');
       navigate('/flight');
     } catch (error) {
       message.error('Failed to update flight');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
-
+  // Handle delete action
   const handleDelete = async () => {
+    setLoading(true); // Start loading during deletion
     try {
       await instance.delete(`/flight-details/${id}`);
       message.success('Flight deleted successfully!');
       navigate('/flight');
     } catch (error) {
       message.error('Failed to delete flight');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -252,13 +265,13 @@ const EditFlight: React.FC = () => {
           </Row>
 
           <Form.Item>
-            <Button className="save-button-edit-flight" shape="round" htmlType="submit" block>
+            <Button className="save-button-edit-flight" shape="round" htmlType="submit" block loading={loading}>
               SAVE
             </Button>
           </Form.Item>
 
           <Form.Item>
-            <Button className="delete-button-edit" danger shape="round" onClick={handleDelete} block>
+            <Button className="delete-button-edit-flight" shape="round" onClick={handleDelete} block loading={loading}>
               DELETE
             </Button>
           </Form.Item>
