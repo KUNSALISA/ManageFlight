@@ -310,8 +310,6 @@ const CreateFlight: React.FC = () =>{
             </Button>
           </div>
           <div className="profile-section-addf">
-            <img src={PPP} alt="Profile" className="profile-image-addf" />
-            <span className="user-name-addf">John Doe</span>
             <Dropdown overlay={menu}>
               <Button>
                <DownOutlined />

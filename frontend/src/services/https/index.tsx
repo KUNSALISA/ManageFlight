@@ -45,21 +45,21 @@ async function GetFlightDetails() {
   return res;
 }
 
-async function GetFlightDetailsByID(id: string) {
+async function GetFlightDetailsByID(id: Number | undefined) {
   let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("GET"))
     .then(res => (res.status == 200 ? res.json() : false));
   
   return res;
 }
 
-async function UpdateFlightDetails(id: string, data: FlightDetailsInterface) {
-  let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("PUT", data))
+async function UpdateFlightDetails(data: FlightDetailsInterface) {
+  let res = await fetch(`${apiUrl}/flight-details`, createRequestOptions("PUT", data))
     .then(res => (res.status == 200 ? res.json() : false));
   
   return res;
 }
 
-async function DeleteFlightDetails(id: string) {
+async function DeleteFlightDetails(id: Number | undefined) {
   let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("DELETE"))
     .then(res => (res.status == 200 ? true : false));
   

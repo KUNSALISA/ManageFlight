@@ -3,21 +3,28 @@ import axios from "axios";
 import { Table, Button, Input, Row, Col, Modal, DatePicker, message, Dropdown, Menu } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import { DownOutlined,SearchOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined, DownOutlined,SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
-import {FlightDetailsInterface} from '../../interfaces/fullmanageflight'
+import {GetFlightDetails,GetFlightDetailsByID,UpdateFlightDetails,GetAirline,GetTypeOfFlight,GetAirports} from '../../services/https/index';
+import { FlightDetailsInterface, AirlineInterface, AirportInterface, TypeOfFlightInterface } from '../../interfaces/fullmanageflight';
 import "./DateFlight.css";
 
 const FlightTable: React.FC = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [flights, setFlights] = useState<FlightDetailsInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<any>(null); // Popup selected date
+  const [selectedDate, setSelectedDate] = useState<any>(null); 
+  const [modalText, setModalText] = useState<String>();
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState<Number>();
   const navigate = useNavigate();
+
 
   // Table columns definition
   const columns: ColumnsType<FlightDetailsInterface> = [
@@ -62,6 +69,29 @@ const FlightTable: React.FC = () => {
       key: "TypeID",
       render: (record) => <>{record.Type?.TypeFlight || "N/A"}</>,
     },
+    {
+      title: "Manage",
+      dataIndex: "Manage",
+      key: "manage",
+      render: (text, record, index) => (
+        <>
+          <Button
+            onClick={() => navigate(`/edit-flight/${record.ID}`)}
+            shape="circle"
+            icon={<EditOutlined />}
+            size={"large"}
+          />
+          <Button
+            onClick={() => showModal(record)}
+            style={{ marginLeft: 10 }}
+            shape="circle"
+            icon={<DeleteOutlined />}
+            size={"large"}
+            danger
+          />
+        </>
+      ),
+    },
   ];
 
   // Fetch flight details from API
@@ -85,13 +115,20 @@ const FlightTable: React.FC = () => {
     flight.FlightCode.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  // Handle showing the modal for date selection
   const handleAdd = () => {
     if (selectedRowKeys.length === 0) {
       message.error("Please select at least one flight.");
       return;
     }
     setIsModalVisible(true);
+  };
+
+  const showModal = (val: FlightDetailsInterface) => {
+    setModalText(
+      `คุณต้องการลบข้อมูลผู้ใช้ "${val.FlightCode}" หรือไม่ ?`
+    );
+    setDeleteId(val.ID);
+    setOpen(true);
   };
 
   // Handle saving selected flights with the chosen date
@@ -148,8 +185,6 @@ const FlightTable: React.FC = () => {
         <Button className="home-button-addf-fd" shape="round" onClick={() => navigate("/flight")}>Home</Button>
 
         <div className="profile-section-addf-fd">
-          <img src={PPP} alt="Profile" className="profile-image" />
-          <span className="user-name">John Doe</span>
           <Dropdown overlay={menu}>
             <Button>
               <DownOutlined />
@@ -192,7 +227,6 @@ const FlightTable: React.FC = () => {
         />
       </div>
 
-      {/* Modal for Date Selection */}
       <Modal
         title="Select Date"
         visible={isModalVisible}
