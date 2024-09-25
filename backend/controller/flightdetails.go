@@ -18,18 +18,69 @@ func CreateFlightDetails(c *gin.Context) {
 		return
 	}
 
+	db := entity.DB()
+
 	// Validate ScheduleStart and ScheduleEnd
 	if flightDetails.ScheduleStart.IsZero() || flightDetails.ScheduleEnd.IsZero() {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ScheduleStart and ScheduleEnd are required"})
 		return
 	}
 
-	db := entity.DB()
+	// Check if related entities (Airline, FlyingFrom, GoingTo, Type) exist
+	var airline entity.Airline
+	var flyingFrom entity.Airport
+	var goingTo entity.Airport
+	var flightType entity.TypeOfFlight
+
+	// Preload Airline
+	if flightDetails.AirlineID != nil {
+		db.First(&airline, flightDetails.AirlineID)
+		if airline.ID == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Airline not found"})
+			return
+		}
+	}
+
+	// Preload FlyingFrom
+	if flightDetails.FlyingFromID != nil {
+		db.First(&flyingFrom, flightDetails.FlyingFromID)
+		if flyingFrom.ID == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Flying from airport not found"})
+			return
+		}
+	}
+
+	// Preload GoingTo
+	if flightDetails.GoingToID != nil {
+		db.First(&goingTo, flightDetails.GoingToID)
+		if goingTo.ID == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Going to airport not found"})
+			return
+		}
+	}
+
+	// Preload Flight Type
+	if flightDetails.TypeID != nil {
+		db.First(&flightType, flightDetails.TypeID)
+		if flightType.ID == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Flight type not found"})
+			return
+		}
+	}
+
+	// Set associated fields
+	flightDetails.Airline = airline
+	flightDetails.FlyingFrom = flyingFrom
+	flightDetails.GoingTo = goingTo
+	flightDetails.Type = flightType
+
+	// Create FlightDetails record
 	if err := db.Create(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	// Preload all relationships for the response
 	if err := db.Preload("Airline").Preload("FlyingFrom").Preload("GoingTo").Preload("Type").First(&flightDetails).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"fmt"
 	"time"
 
 	"gorm.io/driver/sqlite"
@@ -19,11 +18,13 @@ func UintPtr(i uint) *uint {
 }
 
 func SetupDatabase() {
+	// เปิดการเชื่อมต่อฐานข้อมูล SQLite
 	database, err := gorm.Open(sqlite.Open("G11_PROJECT.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
+	// ทำการ AutoMigrate เพื่อสร้างตารางตามโครงสร้างของ Entity ที่กำหนด
 	database.AutoMigrate(
 		&Admin{},
 		&Airline{},
@@ -34,9 +35,10 @@ func SetupDatabase() {
 	)
 	db = database
 
+	// สร้างข้อมูลผู้ใช้ (Admin)
 	hashedPassword, _ := HashPassword("admin")
 	birthday, _ := time.Parse("2006-01-02", "2003-08-15")
-	User := []Admin{
+	admins := []Admin{
 		{
 			Email:     "Admin@gmail.com",
 			Password:  hashedPassword,
@@ -45,19 +47,21 @@ func SetupDatabase() {
 			Birthday:  birthday,
 		},
 	}
-	for _, pkg := range User {
-		db.FirstOrCreate(&pkg, Admin{Email: pkg.Email})
+	for _, admin := range admins {
+		db.FirstOrCreate(&admin, Admin{Email: admin.Email})
 	}
 
+	// สร้างข้อมูลประเภทเที่ยวบิน (TypeOfFlight)
 	flightTypes := []TypeOfFlight{
 		{TypeFlight: "Departures"},
 		{TypeFlight: "Domestic flight"},
 	}
-	for _, flightT := range flightTypes {
-		db.FirstOrCreate(&flightT, TypeOfFlight{TypeFlight: flightT.TypeFlight})
+	for _, flightType := range flightTypes {
+		db.FirstOrCreate(&flightType, TypeOfFlight{TypeFlight: flightType.TypeFlight})
 	}
 
-	air_flight := []Airline{
+	// สร้างข้อมูลสายการบิน (Airline)
+	airlines := []Airline{
 		{AirlineName: "AirAsia"},
 		{AirlineName: "Thai Airways"},
 		{AirlineName: "Bangkok Airways"},
@@ -71,10 +75,11 @@ func SetupDatabase() {
 		{AirlineName: "Turkish"},
 		{AirlineName: "Hainan"},
 	}
-	for _, airline_flight := range air_flight {
-		db.FirstOrCreate(&airline_flight, Airline{AirlineName: airline_flight.AirlineName})
+	for _, airline := range airlines {
+		db.FirstOrCreate(&airline, Airline{AirlineName: airline.AirlineName})
 	}
 
+	// สร้างข้อมูลสนามบิน (Airport)
 	airports := []Airport{
 		{AirportName: "Suvarnabhumi Airport", AirportCode: "BKK"},
 		{AirportName: "Don Mueang International Airport", AirportCode: "DMK"},
@@ -86,25 +91,23 @@ func SetupDatabase() {
 		db.FirstOrCreate(&airport, Airport{AirportName: airport.AirportName})
 	}
 
-	// Fetch existing data from the database for references
+	// ดึงข้อมูลที่เกี่ยวข้องเพื่อนำมาใช้ในข้อมูล FlightDetails
 	var airline Airline
 	var flyingFrom, goingTo Airport
 	var flightType TypeOfFlight
 
-	// Fetching related data
 	db.First(&airline, "airline_name = ?", "AirAsia")
 	db.First(&flyingFrom, "airport_name = ?", "Suvarnabhumi Airport")
 	db.First(&goingTo, "airport_name = ?", "Don Mueang International Airport")
 	db.First(&flightType, "type_flight = ?", "Departures")
 
-	// Check if data fetched correctly
-	fmt.Println("Airline ID:", airline.ID)
-	fmt.Println("Flying From ID:", flyingFrom.ID)
-	fmt.Println("Going To ID:", goingTo.ID)
-	fmt.Println("Type ID:", flightType.ID)
+	// ตรวจสอบการดึงข้อมูล
+	if airline.ID == 0 || flyingFrom.ID == 0 || goingTo.ID == 0 || flightType.ID == 0 {
+		panic("related data not found")
+	}
 
-	// Preparing the FlightDetails data
-	Details := []FlightDetails{
+	// สร้างข้อมูลรายละเอียดเที่ยวบิน (FlightDetails)
+	flightDetails := []FlightDetails{
 		{
 			FlightCode:    "FD4113",
 			ScheduleStart: time.Date(2023, 9, 10, 8, 30, 0, 0, time.UTC),
@@ -112,10 +115,10 @@ func SetupDatabase() {
 			Hour:          4,
 			Cost:          100,
 			Point:         10,
-			AirlineID:     UintPtr(1),
-			FlyingFromID:  UintPtr(2),
-			GoingToID:     UintPtr(3),
-			TypeID:        UintPtr(1),
+			AirlineID:     UintPtr(airline.ID),
+			FlyingFromID:  UintPtr(flyingFrom.ID),
+			GoingToID:     UintPtr(goingTo.ID),
+			TypeID:        UintPtr(flightType.ID),
 		},
 		{
 			FlightCode:    "AA102",
@@ -124,10 +127,10 @@ func SetupDatabase() {
 			Hour:          4,
 			Cost:          150,
 			Point:         20,
-			AirlineID:     UintPtr(3),
-			FlyingFromID:  UintPtr(1),
-			GoingToID:     UintPtr(4),
-			TypeID:        UintPtr(2),
+			AirlineID:     UintPtr(3), // ID ของสายการบินที่กำหนด
+			FlyingFromID:  UintPtr(1), // ID ของสนามบินต้นทาง
+			GoingToID:     UintPtr(4), // ID ของสนามบินปลายทาง
+			TypeID:        UintPtr(2), // ID ของประเภทเที่ยวบิน
 		},
 		{
 			FlightCode:    "TG202",
@@ -143,28 +146,9 @@ func SetupDatabase() {
 		},
 	}
 
-	// Insert or update FlightDetails data
-	for _, flightDetail := range Details {
+	// แทรกหรืออัปเดตข้อมูล FlightDetails
+	for _, flightDetail := range flightDetails {
 		db.Where(FlightDetails{FlightCode: flightDetail.FlightCode}).
 			Assign(flightDetail).FirstOrCreate(&flightDetail)
 	}
-
-	// // Fetch flight, flight detail, and admin data
-	// var flightDetail FlightDetails
-	// var admin Admin
-
-	// db.First(&flightDetail, "flight_code = ?", "AA102")
-	// db.First(&admin, "email = ?", "Admin@gmail.com")
-
-	// flightAndDetails := []FlightAndFlightDetails{
-	// 	{
-	// 		FlightDetailID: UintPtr(3),
-	// 		AdminID:        UintPtr(1),
-	// 	},
-	// }
-
-	// // Insert flight and flight details data
-	// for _, ffd := range flightAndDetails {
-	// 	db.Create(&ffd)
-	// }
 }
