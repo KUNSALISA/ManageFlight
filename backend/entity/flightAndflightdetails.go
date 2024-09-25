@@ -9,7 +9,7 @@ import (
 type FlightAndFlightDetails struct {
 	gorm.Model
 
-	FlightDate time.Time `json:"flight_date"`
+	FlightDate time.Time 
 
 	FlightDetailID *uint
 	FlightDetail   FlightDetails `gorm:"foreignKey:FlightDetailID"`

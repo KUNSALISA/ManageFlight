@@ -6,8 +6,8 @@ import (
 
 type Airport struct {
 	gorm.Model
-	AirportName string `json:"airport_name"`
-	AirportCode string `json:"airport_code"`
+	AirportName string 
+	AirportCode string 
 
 	FlyingFrom []FlightDetails `gorm:"foreignKey:FlyingFromID"`
 	GoingTo    []FlightDetails `gorm:"foreignKey:GoingToID"`

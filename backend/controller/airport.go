@@ -15,8 +15,8 @@ func GetAirports(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": airports})
-}
+		c.JSON(http.StatusOK, gin.H{"data": airports})
+	}
 
 func GetAirportByID(c *gin.Context) {
 	var airport entity.Airport

@@ -42,13 +42,9 @@ export interface FlightDetailsInterface {
     Cost: number;
     Point: number;
     AirlineID?: number;
-    Airline?: AirlineInterface;
     FlyingFromID?: number;
-    FlyingFrom?: AirportInterface;
     GoingToID?: number;
-    GoingTo?: AirportInterface;
     TypeID?: number;
-    Type?: TypeOfFlightInterface;
 }
 
 // TypeOfFlight Interface

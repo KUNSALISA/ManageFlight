@@ -18,75 +18,54 @@ func CreateFlightDetails(c *gin.Context) {
 		return
 	}
 
-	db := entity.DB()
+	db := entity.DB() // Assuming you've initialized the DB in your project
 
-	// Validate ScheduleStart and ScheduleEnd
-	if flightDetails.ScheduleStart.IsZero() || flightDetails.ScheduleEnd.IsZero() {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ScheduleStart and ScheduleEnd are required"})
-		return
-	}
-
-	// Check if related entities (Airline, FlyingFrom, GoingTo, Type) exist
+	// Preload related entities
 	var airline entity.Airline
 	var flyingFrom entity.Airport
 	var goingTo entity.Airport
 	var flightType entity.TypeOfFlight
 
-	// Preload Airline
-	if flightDetails.AirlineID != nil {
-		db.First(&airline, flightDetails.AirlineID)
-		if airline.ID == 0 {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Airline not found"})
-			return
-		}
+	if airline.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "airline not found"})
+		return
 	}
-
-	// Preload FlyingFrom
-	if flightDetails.FlyingFromID != nil {
-		db.First(&flyingFrom, flightDetails.FlyingFromID)
-		if flyingFrom.ID == 0 {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Flying from airport not found"})
-			return
-		}
+	if flyingFrom.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "flyingFrom not found"})
+		return
 	}
-
-	// Preload GoingTo
-	if flightDetails.GoingToID != nil {
-		db.First(&goingTo, flightDetails.GoingToID)
-		if goingTo.ID == 0 {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Going to airport not found"})
-			return
-		}
+	if goingTo.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "goingTo not found"})
+		return
 	}
-
-	// Preload Flight Type
-	if flightDetails.TypeID != nil {
-		db.First(&flightType, flightDetails.TypeID)
-		if flightType.ID == 0 {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Flight type not found"})
-			return
-		}
-	}
-
-	// Set associated fields
-	flightDetails.Airline = airline
-	flightDetails.FlyingFrom = flyingFrom
-	flightDetails.GoingTo = goingTo
-	flightDetails.Type = flightType
-
-	// Create FlightDetails record
-	if err := db.Create(&flightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if flightType.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "flightType not found"})
 		return
 	}
 
-	// Preload all relationships for the response
-	if err := db.Preload("Airline").Preload("FlyingFrom").Preload("GoingTo").Preload("Type").First(&flightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	flight := entity.FlightDetails{
+		FlightCode:    flightDetails.FlightCode,
+		ScheduleStart: flightDetails.ScheduleStart,
+		ScheduleEnd:   flightDetails.ScheduleStart,
+		Hour:          flightDetails.Hour,
+		Cost:          flightDetails.Cost,
+		Point:         flightDetails.Point,
+		AirlineID:     flightDetails.AirlineID,
+		Airline:       airline,
+		FlyingFromID:  flightDetails.FlyingFromID,
+		FlyingFrom:    flyingFrom,
+		GoingToID:     flightDetails.GoingToID,
+		GoingTo:       goingTo,
+		TypeID:        flightDetails.TypeID,
+		Type:          flightType,
+	}
+
+	if err := db.Create(&flight).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Created successfully", "data": flightDetails})
+	c.JSON(http.StatusCreated, gin.H{"message": "FlightDetails created successfully", "data": flightDetails})
 }
 
 // GetFlightDetails - ฟังก์ชันสำหรับดึงข้อมูล FlightDetails ทั้งหมด

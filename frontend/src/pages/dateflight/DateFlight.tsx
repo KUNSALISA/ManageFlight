@@ -1,35 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Button, Input, Row, Col, Modal, DatePicker, message } from "antd";
+import { Table, Button, Input, Row, Col, Modal, DatePicker, message, Dropdown, Menu } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import { SearchOutlined } from "@ant-design/icons";
+import { DownOutlined,SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
+import {FlightDetailsInterface} from '../../interfaces/fullmanageflight'
 import "./DateFlight.css";
 
-export interface FlightDetail {
-  ID: number;
-  flight_code: string;
-  schedule_start: string;
-  schedule_end: string;
-  Airline: {
-    airline_name: string;
-  };
-  FlyingFrom: {
-    airport_code: string;
-  };
-  GoingTo: {
-    airport_code: string;
-  };
-  Type: {
-    type_flight: string;
-  };
-}
-
 const FlightTable: React.FC = () => {
-  const [flights, setFlights] = useState<FlightDetail[]>([]);
+  const [flights, setFlights] = useState<FlightDetailsInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -38,34 +20,34 @@ const FlightTable: React.FC = () => {
   const navigate = useNavigate();
 
   // Table columns definition
-  const columns: ColumnsType<FlightDetail> = [
+  const columns: ColumnsType<FlightDetailsInterface> = [
     {
       title: "Flight Code",
-      dataIndex: "flight_code",
-      key: "flight_code",
+      dataIndex: "FlightCode",
+      key: "FlightCode",
     },
     {
       title: "Flying From",
       key: "FlyingFromID",
-      render: (record) => <>{record.FlyingFrom?.airport_code || "N/A"}</>,
+      render: (record) => <>{record.FlyingFrom?.AirportCode || "N/A"}</>,
     },
     {
       title: "Going To",
       key: "GoingToID",
-      render: (record) => <>{record.GoingTo?.airport_code || "N/A"}</>,
+      render: (record) => <>{record.GoingTo?.AirportCode || "N/A"}</>,
     },
     {
       title: "Schedule Start",
-      dataIndex: "schedule_start",
-      key: "schedule_start",
+      dataIndex: "ScheduleStart",
+      key: "ScheduleStart",
       render: (schedule_start) => (
         <p>{dayjs(schedule_start).format("HH:mm:ss")}</p>
       ),
     },
     {
       title: "Schedule End",
-      dataIndex: "schedule_end",
-      key: "schedule_end",
+      dataIndex: "ScheduleEnd",
+      key: "ScheduleEnd",
       render: (schedule_end) => (
         <p>{dayjs(schedule_end).format("HH:mm:ss")}</p>
       ),
@@ -73,12 +55,12 @@ const FlightTable: React.FC = () => {
     {
       title: "Airline",
       key: "AirlineID",
-      render: (record) => <>{record.Airline?.airline_name || "N/A"}</>,
+      render: (record) => <>{record.Airline?.AirlineName || "N/A"}</>,
     },
     {
       title: "Type",
       key: "TypeID",
-      render: (record) => <>{record.Type?.type_flight || "N/A"}</>,
+      render: (record) => <>{record.Type?.TypeFlight || "N/A"}</>,
     },
   ];
 
@@ -100,7 +82,7 @@ const FlightTable: React.FC = () => {
 
   // Filter flights based on search text
   const filteredFlights = flights.filter((flight) =>
-    flight.flight_code.toLowerCase().includes(searchText.toLowerCase())
+    flight.FlightCode.toLowerCase().includes(searchText.toLowerCase())
   );
 
   // Handle showing the modal for date selection
@@ -148,6 +130,14 @@ const FlightTable: React.FC = () => {
     navigate('/');
   };
 
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" onClick={handleLogout}>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <div className="container-dateflight-fd">
       {/* Header */}
@@ -158,9 +148,13 @@ const FlightTable: React.FC = () => {
         <Button className="home-button-addf-fd" shape="round" onClick={() => navigate("/flight")}>Home</Button>
 
         <div className="profile-section-addf-fd">
-          <img src={PPP} alt="Profile" className="profile-image-addf-fd" />
-          <span className="user-name-addf-fd">John Doe</span>
-          <Button onClick={handleLogout}>Logout</Button>
+          <img src={PPP} alt="Profile" className="profile-image" />
+          <span className="user-name">John Doe</span>
+          <Dropdown overlay={menu}>
+            <Button>
+              <DownOutlined />
+            </Button>
+          </Dropdown>
         </div>
       </div>
 

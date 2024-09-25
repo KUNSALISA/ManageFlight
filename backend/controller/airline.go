@@ -18,6 +18,7 @@ func GetAirline(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": airlines})
 }
 
+
 func GetAirlineByID(c *gin.Context) {
 	var airline entity.Airline
 	id := c.Param("id")

@@ -6,7 +6,7 @@ import (
 
 type Airline struct {
 	gorm.Model
-	AirlineName string `json:"airline_name"`
+	AirlineName string 
 
 	FlightDetails []FlightDetails `gorm:"foreignKey:AirlineID"`
 

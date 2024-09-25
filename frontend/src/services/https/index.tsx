@@ -24,8 +24,6 @@ const createRequestOptions = (method: string, data: any = null) => {
   };
 };
 
-// Fetch-based API methods
-
 async function SignUp(data: AdminInterface) {
   let res = await fetch(`${apiUrl}/signup`, createRequestOptions("POST", data))
     .then(res => (res.status == 201 ? res.json() : false));
@@ -82,6 +80,22 @@ async function GetAirlineByID(id: string) {
   return res;
 }
 
+
+async function GetAirports() {
+  let res = await fetch(`${apiUrl}/airport`, createRequestOptions("GET"))
+    .then(res => (res.status == 200 ? res.json() : false));
+  
+  return res;
+}
+
+
+async function GetTypeOfFlight() {
+  let res = await fetch(`${apiUrl}/TypeOfFlight`, createRequestOptions("GET"))
+    .then(res => (res.status == 200 ? res.json() : false));
+  
+  return res;
+}
+
 export {
   SignUp,
   CreateFlightDetails,
@@ -90,5 +104,7 @@ export {
   UpdateFlightDetails,
   DeleteFlightDetails,
   GetAirline,
-  GetAirlineByID
+  GetAirlineByID,
+  GetTypeOfFlight,
+  GetAirports
 };

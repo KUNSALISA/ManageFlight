@@ -13,7 +13,6 @@ import {
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import instance from '../addflight/axiosConfig';
 import './EditFlight.css';
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';

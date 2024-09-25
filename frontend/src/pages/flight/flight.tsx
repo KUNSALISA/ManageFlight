@@ -8,75 +8,32 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
+import {FlightDetailsInterface,FlightAndFlightDetailsInterface} from '../../interfaces/fullmanageflight'
 import "./flight.css";
 
-export interface FlightDetail {
-  ID: number;
-  FlightDetailID: number;  // ID from FlightDetails
-  FlightDate: string; // Date of the flight
-  flight_code: string; // From FlightDetails
-  schedule_start: string; // From FlightDetails
-  schedule_end: string; // From FlightDetails
-  Airline: {
-    airline_name: string;
-  };
-  FlyingFrom: {
-    airport_code: string;
-  };
-  GoingTo: {
-    airport_code: string;
-  };
-}
-
 const FlightTable: React.FC = () => {
-  const [flights, setFlights] = useState<FlightDetail[]>([]);
+  const [flights, setDate] = useState<FlightAndFlightDetailsInterface[]>([]);
+  const [flightdetails, setFlights] = useState<FlightDetailsInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const navigate = useNavigate();
 
-  // Fetch flight details from the backend API
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:8080/flight-and-flight-details");
-        const flightData = response.data.data.map((item: any) => ({
-          ID: item.ID,
-          FlightDetailID: item.FlightDetailID,
-          FlightDate: moment(item.flight_date).format("YYYY-MM-DD"),
-          flight_code: item.FlightDetail.flight_code,
-          schedule_start: moment(item.FlightDetail.schedule_start).format("YYYY-MM-DD HH:mm"),
-          schedule_end: moment(item.FlightDetail.schedule_end).format("YYYY-MM-DD HH:mm"),
-          Airline: item.FlightDetail.Airline,
-          FlyingFrom: item.FlightDetail.FlyingFrom,
-          GoingTo: item.FlightDetail.GoingTo,
-        }));
-        setFlights(flightData);
-      } catch (error) {
-        console.error("Error fetching flight details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
   // Table columns
-  const columns: ColumnsType<FlightDetail> = [
+  const columns: ColumnsType<FlightAndFlightDetailsInterface> = [
     {
       title: "Flight Code",
-      dataIndex: "flight_code",
-      key: "flight_code",
+      dataIndex: "FlightDate",
+      key: "FlightDate",
     },
     {
       title: "Flying From",
       key: "FlyingFromID",
-      render: (record) => <>{record.FlyingFrom?.airport_code || "N/A"}</>,
+      render: (record) => <>{record.FlyingFrom?.AirportCode || "N/A"}</>,
     },
     {
       title: "Going To",
       key: "GoingToID",
-      render: (record) => <>{record.GoingTo?.airport_code || "N/A"}</>,
+      render: (record) => <>{record.GoingTo?.AirportCode || "N/A"}</>,
     },
     {
       title: "Schedule Start",
@@ -97,11 +54,11 @@ const FlightTable: React.FC = () => {
     {
       title: "Airline",
       key: "AirlineID",
-      render: (record) => <>{record.Airline?.airline_name || "N/A"}</>,
+      render: (record) => <>{record.Airline?.AirlineName || "N/A"}</>,
     },
     {
       title: "Flight Date",
-      dataIndex: "FlightDate",  // Displaying flight_date from API
+      dataIndex: "FlightDate",  
       key: "FlightDate",
     },
     {
@@ -115,6 +72,34 @@ const FlightTable: React.FC = () => {
     },
   ];
 
+    // Fetch flight details from the backend API
+    useEffect(() => {
+      const fetchData = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get("http://localhost:8080/flight-and-flight-details");
+          const flightData = response.data.data.map((item: any) => ({
+            ID: item.ID,
+            FlightDetailID: item.FlightDetailID,
+            FlightDate: moment(item.flight_date).format("YYYY-MM-DD"),
+            flight_code: item.FlightDetail.flight_code,
+            schedule_start: moment(item.FlightDetail.schedule_start).format("YYYY-MM-DD HH:mm"),
+            schedule_end: moment(item.FlightDetail.schedule_end).format("YYYY-MM-DD HH:mm"),
+            Airline: item.FlightDetail.Airline,
+            FlyingFrom: item.FlightDetail.FlyingFrom,
+            GoingTo: item.FlightDetail.GoingTo,
+          }));
+          setFlights(flightData);
+        } catch (error) {
+          console.error("Error fetching flight details:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }, []);
+  
+    
   // Filter data based on search text
   const filteredFlights = flights.filter((flight) => {
     return flight.flight_code.toLowerCase().includes(searchText.toLowerCase());
