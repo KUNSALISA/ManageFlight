@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/KUNSALISA/ManageFlight/entity"
 	"github.com/gin-gonic/gin"
@@ -20,24 +19,29 @@ func CreateFlightDetails(c *gin.Context) {
 
 	db := entity.DB() // Assuming you've initialized the DB in your project
 
-	// Preload related entities
 	var airline entity.Airline
-	var flyingFrom entity.Airport
-	var goingTo entity.Airport
-	var flightType entity.TypeOfFlight
-
+	db.First(&airline, flightDetails.AirlineID)
 	if airline.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "airline not found"})
 		return
 	}
+
+	var flyingFrom entity.Airport
+	db.First(&flyingFrom, flightDetails.FlyingFromID)
 	if flyingFrom.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "flyingFrom not found"})
 		return
 	}
+
+	var goingTo entity.Airport
+	db.First(&goingTo, flightDetails.GoingToID)
 	if goingTo.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "goingTo not found"})
 		return
 	}
+
+	var flightType entity.TypeOfFlight
+	db.First(&flightType, flightDetails.TypeID)
 	if flightType.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "flightType not found"})
 		return
@@ -72,7 +76,6 @@ func CreateFlightDetails(c *gin.Context) {
 func GetFlightDetails(c *gin.Context) {
 	var flightDetails []entity.FlightDetails
 
-	// ดึงข้อมูลจากฐานข้อมูลพร้อมข้อมูลที่สัมพันธ์กัน
 	if err := entity.DB().
 		Preload("Airline").
 		Preload("FlyingFrom", func(db *gorm.DB) *gorm.DB {
@@ -87,86 +90,68 @@ func GetFlightDetails(c *gin.Context) {
 		return
 	}
 
-	// ส่งข้อมูลกลับไปในรูปแบบ JSON
 	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
 }
 
 // GetFlightDetailsByID - ฟังก์ชันสำหรับดึงข้อมูล FlightDetails ตาม ID
 func GetFlightDetailsByID(c *gin.Context) {
+	ID := c.Param("id")
 	var flightDetails entity.FlightDetails
-	id := c.Param("id")
 
-	// ดึงข้อมูลจากฐานข้อมูลตาม ID
-	if err := entity.DB().First(&flightDetails, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "FlightDetails not found"})
+	db := entity.DB()
+	results := db.Preload("Airline").
+		Preload("FlyingFrom", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id, airport_code")
+		}).
+		Preload("GoingTo", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id, airport_code")
+		}).
+		Preload("Type").First(&flightDetails, ID)
+	if results.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 		return
 	}
-
-	// ส่งข้อมูลกลับไปในรูป JSON
-	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
+	if flightDetails.ID == 0 {
+		c.JSON(http.StatusNoContent, gin.H{})
+		return
+	}
+	c.JSON(http.StatusOK, flightDetails)
 }
 
 func UpdateFlightDetails(c *gin.Context) {
 	var flightDetails entity.FlightDetails
-	id := c.Param("id")
+	Flight_ID := c.Param("id")
 
-	if err := entity.DB().First(&flightDetails, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "FlightDetails not found"})
+	db := entity.DB()
+	result := db.First(&flightDetails, Flight_ID)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
 		return
 	}
 
-	var input entity.FlightDetails
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.ShouldBindJSON(&flightDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
 		return
 	}
 
-	if input.FlyingFromID == nil || input.GoingToID == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "FlyingFromID and GoingToID are required"})
+	result = db.Save(&flightDetails)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return
 	}
 
-	// Update fields
-	flightDetails.FlightCode = input.FlightCode
-	flightDetails.ScheduleStart = input.ScheduleStart
-	flightDetails.ScheduleEnd = input.ScheduleEnd
-	flightDetails.Hour = input.Hour
-	flightDetails.Cost = input.Cost
-	flightDetails.Point = input.Point
-	flightDetails.AirlineID = input.AirlineID
-	flightDetails.FlyingFromID = input.FlyingFromID
-	flightDetails.GoingToID = input.GoingToID
-	flightDetails.TypeID = input.TypeID
-	flightDetails.UpdatedAt = time.Now()
+	c.JSON(http.StatusOK, gin.H{"message": "Updated successful"})
 
-	if err := entity.DB().Save(&flightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": flightDetails})
 }
 
 func DeleteFlightDetails(c *gin.Context) {
-	var flightDetails entity.FlightDetails
+
 	id := c.Param("id")
 
-	if err := entity.DB().First(&flightDetails, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "FlightDetails not found"})
+	db := entity.DB()
+	if tx := db.Exec("DELETE FROM fligth_details WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id not found"})
 		return
 	}
-
-	result := entity.DB().Delete(&flightDetails)
-
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-		return
-	}
-
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete FlightDetails"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "FlightDetails deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Deleted successful"})
 }
