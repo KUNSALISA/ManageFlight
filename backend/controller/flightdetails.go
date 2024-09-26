@@ -128,9 +128,8 @@ func UpdateFlightDetails(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
 		return
 	}
-
 	if err := c.ShouldBindJSON(&flightDetails); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload", "details": err.Error()})
 		return
 	}
 

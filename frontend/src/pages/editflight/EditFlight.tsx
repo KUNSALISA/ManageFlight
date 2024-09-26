@@ -46,16 +46,6 @@ function EditFlight(){
     }
   };
 
-  // const fetchSelectOptions = async () => {
-  //   const airlineRes = await GetAirline();
-  //   const typeRes = await GetTypeOfFlight();
-  //   const airportRes = await GetAirports();
-    
-  //   if (airlineRes) setAirlines(airlineRes.data);
-  //   if (typeRes) setTypes(typeRes.data);
-  //   if (airportRes) setAirports(airportRes.data);
-  // };
-
   const onFinish = async (values: FlightDetailsInterface) => {
     const updatedFlight = { ...values, ID: flight?.ID };
     const res = await UpdateFlightDetails(updatedFlight);
@@ -113,7 +103,6 @@ function EditFlight(){
     getAirports();
     getTypes();
 
-    // fetchSelectOptions();
   }, []);
 
   return (
