@@ -125,7 +125,7 @@ const FlightTable: React.FC = () => {
 
   const showModal = (val: FlightDetailsInterface) => {
     setModalText(
-      `คุณต้องการลบข้อมูลผู้ใช้ "${val.FlightCode}" หรือไม่ ?`
+      `Do you want to delete "${val.FlightCode}" ?`
     );
     setDeleteId(val.ID);
     setOpen(true);
@@ -149,6 +149,7 @@ const FlightTable: React.FC = () => {
       console.log("Response:", response.data);
       message.success("Flights saved successfully!");
       setIsModalVisible(false);
+      navigate("/flight");
     } catch (error) {
       console.error("Error saving flights:", error);
       message.error("Failed to save flights.");

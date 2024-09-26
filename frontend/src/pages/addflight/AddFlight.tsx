@@ -242,7 +242,7 @@ const CreateFlight: React.FC = () =>{
         content: "Flight added successfully!",
       });
       setTimeout(() => {
-        navigate("/flight");
+        navigate("/date-flight");
       }, 2000);
     } else {
       messageApi.open({
