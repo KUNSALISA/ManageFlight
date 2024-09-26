@@ -8,7 +8,8 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
-import {FlightDetailsInterface,FlightAndFlightDetailsInterface} from '../../interfaces/fullmanageflight'
+import {FlightDetailsInterface,FlightAndFlightDetailsInterface} from '../../interfaces/fullmanageflight';
+import {GetFlightAndFlightDetails} from '../../services/https/index';
 import "./flight.css";
 
 const FlightTable: React.FC = () => {
@@ -70,15 +71,6 @@ const FlightTable: React.FC = () => {
         <p>{dayjs(FlightDate).format("YYYY:MM:DD")}</p>
       ),
     },
-    // {
-    //   title: "Actions",
-    //   key: "action",
-    //   render: (text, record) => (
-    //     <Button className="edit-button" onClick={() => navigate(`/edit-flight/${record.ID}`)}>
-    //       EDIT
-    //     </Button>
-    //   ),
-    // },
   ];
 
     // Fetch flight details from the backend API
@@ -95,6 +87,9 @@ const FlightTable: React.FC = () => {
         }
       };
       fetchData();
+      // GetFlightAndFlightDetails();
+      // const interval = setInterval(GetFlightAndFlightDetails, 2000); 
+      // return () => clearInterval(interval);
     }, []);
   
     

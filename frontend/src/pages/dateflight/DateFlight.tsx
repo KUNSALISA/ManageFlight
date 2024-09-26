@@ -7,7 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, DownOutlined,SearchOutlined
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
 import PPP from '../../assets/PPP.jpg';
-import {GetFlightDetails,GetFlightDetailsByID,UpdateFlightDetails,GetAirline,GetTypeOfFlight,GetAirports} from '../../services/https/index';
+import {GetFlightDetails,GetFlightDetailsByID,UpdateFlightDetails,GetAirline,GetTypeOfFlight,GetAirports,DeleteFlightDetails} from '../../services/https/index';
 import { FlightDetailsInterface, AirlineInterface, AirportInterface, TypeOfFlightInterface } from '../../interfaces/fullmanageflight';
 import "./DateFlight.css";
 
@@ -25,8 +25,6 @@ const FlightTable: React.FC = () => {
   const [deleteId, setDeleteId] = useState<Number>();
   const navigate = useNavigate();
 
-
-  // Table columns definition
   const columns: ColumnsType<FlightDetailsInterface> = [
     {
       title: "Flight Code",
@@ -94,7 +92,6 @@ const FlightTable: React.FC = () => {
     },
   ];
 
-  // Fetch flight details from API
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -110,7 +107,6 @@ const FlightTable: React.FC = () => {
     fetchData();
   }, []);
 
-  // Filter flights based on search text
   const filteredFlights = flights.filter((flight) =>
     flight.FlightCode.toLowerCase().includes(searchText.toLowerCase())
   );
@@ -131,7 +127,29 @@ const FlightTable: React.FC = () => {
     setOpen(true);
   };
 
-  // Handle saving selected flights with the chosen date
+  const handleOk = async () => {
+    console.log();
+    setConfirmLoading(true);
+    let res = await DeleteFlightDetails(deleteId);
+    await axios.delete(`http://localhost:8080/flight-and-flight-details/${deleteId}`);
+    if (res) {
+      setOpen(false);
+      messageApi.open({
+        type: "success",
+        content: "Deleted successfully!",
+      });
+      GetFlightDetails();
+    } else {
+      setOpen(false);
+      messageApi.open({
+        type: "error",
+        content: "Error Deleted Flights!",
+      });
+    }
+    setConfirmLoading(false);
+  };
+
+
   const handleSave = async () => {
     if (!selectedDate) {
       message.error("Please select a date.");
@@ -156,12 +174,10 @@ const FlightTable: React.FC = () => {
     }
   };
 
-  // Close modal
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setOpen(false);
   };
 
-  // Logout logic
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('token_type');
@@ -194,7 +210,6 @@ const FlightTable: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter Section */}
       <div className="filter-section-addf-fd">
         <Row gutter={16}>
           <Col span={4}>
@@ -213,7 +228,6 @@ const FlightTable: React.FC = () => {
         </Row>
       </div>
 
-      {/* Table Section */}
       <div className="filter-table-fd">
         <Table
           rowSelection={{
@@ -227,6 +241,16 @@ const FlightTable: React.FC = () => {
           pagination={{ pageSize: 5 }}
         />
       </div>
+
+      <Modal
+      title="Delete ?"
+      open={open}
+      onOk={handleOk}
+      confirmLoading={confirmLoading}
+      onCancel={handleCancel}
+      >
+      <p>{modalText}</p>
+      </Modal>
 
       <Modal
         title="Select Date"

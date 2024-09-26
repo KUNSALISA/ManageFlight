@@ -149,7 +149,7 @@ func DeleteFlightDetails(c *gin.Context) {
 	id := c.Param("id")
 
 	db := entity.DB()
-	if tx := db.Exec("DELETE FROM fligth_details WHERE id = ?", id); tx.RowsAffected == 0 {
+	if tx := db.Exec("DELETE FROM flight_details WHERE id = ?", id); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id not found"})
 		return
 	}

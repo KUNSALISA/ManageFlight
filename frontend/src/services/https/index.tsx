@@ -45,10 +45,27 @@ async function GetFlightDetails() {
   return res;
 }
 
-async function GetFlightDetailsByID(id: Number | undefined) {
-  let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("GET"))
-    .then(res => (res.status == 200 ? res.json() : false));
+// async function GetFlightDetailsByID(id: Number | undefined) {
+//   let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("GET"))
+//     .then(res => (res.status == 200 ? res.json() : false));
   
+//   return res;
+// }
+
+async function GetFlightDetailsByID(id: Number | undefined) {
+  const requestOptions = {
+    method: "GET"
+  };
+
+  let res = await fetch(`${apiUrl}/flight-details/${id}`, requestOptions)
+    .then((res) => {
+      if (res.status == 200) {
+        return res.json();
+      } else {
+        return false;
+      }
+    });
+
   return res;
 }
 
@@ -60,9 +77,18 @@ async function UpdateFlightDetails(data: FlightDetailsInterface) {
 }
 
 async function DeleteFlightDetails(id: Number | undefined) {
-  let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("DELETE"))
-    .then(res => (res.status == 200 ? true : false));
-  
+  const requestOptions = {
+    method: "DELETE"
+  };
+
+  let res = await fetch(`${apiUrl}/flight-details/${id}`,requestOptions)
+    .then((res) => {
+      if (res.status == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    });
   return res;
 }
 
@@ -96,6 +122,13 @@ async function GetTypeOfFlight() {
   return res;
 }
 
+async function GetFlightAndFlightDetails() {
+  let res = await fetch(`${apiUrl}/flight-and-flight-details`, createRequestOptions("GET"))
+    .then(res => (res.status == 200 ? res.json() : false));
+  
+  return res;
+}
+
 export {
   SignUp,
   CreateFlightDetails,
@@ -106,5 +139,6 @@ export {
   GetAirline,
   GetAirlineByID,
   GetTypeOfFlight,
-  GetAirports
+  GetAirports,
+  GetFlightAndFlightDetails
 };

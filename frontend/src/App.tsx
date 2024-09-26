@@ -14,7 +14,7 @@ function App() {
         <Route path="/flight" element={<Flight />} />
         <Route path="/date-flight" element={<DateFlight />} />
         <Route path="/add-flight" element={<AddFlight />} /> 
-        <Route path="/edit-flight/:flightCode" element={<EditFlight />} />
+        <Route path="/edit-flight/:id" element={<EditFlight />} />
       </Routes>
     </Router>
   );
