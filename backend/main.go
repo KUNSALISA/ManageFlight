@@ -38,7 +38,7 @@ func main() {
 	r.POST("/flight-details", controller.CreateFlightDetails)
 	r.GET("/flight-details", controller.GetFlightDetails)
 	r.GET("/flight-details/:id", controller.GetFlightDetailsByID)
-	r.PATCH("/flight-details/:id", controller.UpdateFlightDetails)
+	r.PATCH("/flight-details", controller.UpdateFlightDetails)
 	r.DELETE("/flight-details/:id", controller.DeleteFlightDetails)
 
 	// Flight and FlightDetails combined routes
