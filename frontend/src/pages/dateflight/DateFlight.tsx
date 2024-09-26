@@ -6,13 +6,15 @@ import dayjs from "dayjs";
 import { EditOutlined, DeleteOutlined, DownOutlined,SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FFF from '../../assets/FFF.png';
-import {GetFlightDetails,GetFlightDetailsByID,UpdateFlightDetails,GetAirline,GetTypeOfFlight,GetAirports,DeleteFlightDetails} from '../../services/https/index';
-import { FlightDetailsInterface, AirlineInterface, AirportInterface, TypeOfFlightInterface } from '../../interfaces/fullmanageflight';
+import {GetFlightDetails,DeleteFlightDetails} from '../../services/https/index';
+import { FlightDetailsInterface} from '../../interfaces/fullmanageflight';
 import "./DateFlight.css";
 
-const FlightTable: React.FC = () => {
+function FlightTable(){
   const [messageApi, contextHolder] = message.useMessage();
+
   const [flights, setFlights] = useState<FlightDetailsInterface[]>([]);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -72,7 +74,7 @@ const FlightTable: React.FC = () => {
       key: "manage",
       render: (text, record, index) => (
         <>
-          <Button
+           <Button
             onClick={() => navigate(`/edit-flight/${record.ID}`)}
             shape="circle"
             icon={<EditOutlined />}
@@ -127,10 +129,8 @@ const FlightTable: React.FC = () => {
   };
 
   const handleOk = async () => {
-    console.log();
     setConfirmLoading(true);
     let res = await DeleteFlightDetails(deleteId);
-    await axios.delete(`http://localhost:8080/flight-and-flight-details/${deleteId}`);
     if (res) {
       setOpen(false);
       messageApi.open({
@@ -158,9 +158,8 @@ const FlightTable: React.FC = () => {
     const payload = {
       date: selectedDate.format("YYYY-MM-DD"),
       flightIDs: selectedRowKeys,
-      adminID: 1,  // Assuming adminID 1 for testing
+      adminID: 1, 
     };
-
     try {
       const response = await axios.post("http://localhost:8080/flight-and-flight-details", payload);
       console.log("Response:", response.data);
@@ -193,7 +192,6 @@ const FlightTable: React.FC = () => {
 
   return (
     <div className="container-dateflight-fd">
-      {/* Header */}
       <div className="header-addf-fd">
         <div className=".button-group-fd">
           <img src={FFF} alt="Logo" className="addf-logo-fd" />
@@ -242,13 +240,13 @@ const FlightTable: React.FC = () => {
       </div>
 
       <Modal
-      title="Delete ?"
-      open={open}
-      onOk={handleOk}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
+        title="Delete ?"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
       >
-      <p>{modalText}</p>
+        <p>{modalText}</p>
       </Modal>
 
       <Modal

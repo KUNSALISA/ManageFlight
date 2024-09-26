@@ -45,13 +45,6 @@ async function GetFlightDetails() {
   return res;
 }
 
-// async function GetFlightDetailsByID(id: Number | undefined) {
-//   let res = await fetch(`${apiUrl}/flight-details/${id}`, createRequestOptions("GET"))
-//     .then(res => (res.status == 200 ? res.json() : false));
-  
-//   return res;
-// }
-
 async function GetFlightDetailsByID(id: Number | undefined) {
   const requestOptions = {
     method: "GET"
@@ -70,9 +63,21 @@ async function GetFlightDetailsByID(id: Number | undefined) {
 }
 
 async function UpdateFlightDetails(data: FlightDetailsInterface) {
-  let res = await fetch(`${apiUrl}/flight-details`, createRequestOptions("PUT", data))
-    .then(res => (res.status == 200 ? res.json() : false));
-  
+  const requestOptions = {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  };
+
+  let res = await fetch(`${apiUrl}/flight-details`, requestOptions)
+    .then((res) => {
+      if (res.status == 200) {
+        return res.json();
+      } else {
+        return false;
+      }
+    });
+
   return res;
 }
 

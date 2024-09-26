@@ -5,20 +5,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './EditFlight.css';
 import FFF from '../../assets/FFF.png';
 import dayjs from 'dayjs';
-import {
-  GetFlightDetailsByID,
-  UpdateFlightDetails,
-  GetAirline,
-  GetTypeOfFlight,
-  GetAirports
-} from '../../services/https/index';
+import {GetFlightDetailsByID,UpdateFlightDetails,GetAirline,GetTypeOfFlight,GetAirports} from '../../services/https/index';
 import { FlightDetailsInterface, AirlineInterface, AirportInterface, TypeOfFlightInterface } from '../../interfaces/fullmanageflight';
 
 const { Option } = Select;
 
-function EditFlight(){
+function EditFlight() {
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
+
   const [flight, setFlight] = useState<FlightDetailsInterface | null>(null);
   const [airlines, setAirlines] = useState<AirlineInterface[]>([]);
   const [types, setTypes] = useState<TypeOfFlightInterface[]>([]);
@@ -27,8 +22,43 @@ function EditFlight(){
   let { id } = useParams();
   const [form] = Form.useForm();
 
+  const onFinish = async (values: FlightDetailsInterface) => {
+    values.ID = flight?.ID;
+    let res = await UpdateFlightDetails(values);
+
+    if (res) {
+      messageApi.success("Flight updated successfully!");
+      setTimeout(() => {
+        navigate('/date-flight');
+      }, 2000);
+    } else {
+      messageApi.error("Failed to update flight.");
+    }
+  };
+
+  const getAirline = async () => {
+    let res = await GetAirline();
+    if (res) {
+      setAirlines(res);  //setAirports(res.data);
+    }
+  };
+
+  const getAirports = async () => {
+    let res = await GetAirports();
+    if (res) {
+      setAirports(res);
+    }
+  };
+
+  const getTypes = async () => {
+    let res = await GetTypeOfFlight();
+    if (res) {
+      setTypes(res);
+    }
+  };
+
   const getFlightById = async () => {
-    const res = await GetFlightDetailsByID(Number(id));
+    let res = await GetFlightDetailsByID(Number(id));
     if (res) {
       setFlight(res);
       form.setFieldsValue({
@@ -46,19 +76,13 @@ function EditFlight(){
     }
   };
 
-  const onFinish = async (values: FlightDetailsInterface) => {
-    const updatedFlight = { ...values, ID: flight?.ID };
-    const res = await UpdateFlightDetails(updatedFlight);
-    if (res) {
-      messageApi.success("Flight updated successfully!");
-      setTimeout(() => {
-        navigate('/date-flight');
-      }, 2000);
-    } else {
-      messageApi.error("Failed to update flight.");
-    }
-  };
-
+  useEffect(() => {
+    getFlightById();
+    getAirline();
+    getAirports();
+    getTypes();
+  }, []);
+  
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('token_type');
@@ -72,38 +96,6 @@ function EditFlight(){
       </Menu.Item>
     </Menu>
   );
-
-  const getAirline = async () => {
-    let res = await GetAirline();
-    if (res) {
-      setAirlines(res.data);
-      console.log(res);
-    }
-  };
-
-  const getAirports = async () => {
-    let res = await GetAirports();
-    if (res) {
-      setAirports(res.data);
-      console.log(res);
-    }
-  };
-
-  const getTypes = async () => {
-    let res = await GetTypeOfFlight();
-    if (res) {
-      setTypes(res.data);
-      console.log(res);
-    }
-  };
-
-  useEffect(() => {
-    getFlightById();
-    getAirline();
-    getAirports();
-    getTypes();
-
-  }, []);
 
   return (
     <div className="edit-flight-container">
@@ -126,7 +118,13 @@ function EditFlight(){
       </div>
 
       <div className="form-container-addf-dt">
-        <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
+        <Form
+          name="basic"
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -134,7 +132,7 @@ function EditFlight(){
                 name="FlightCode"
                 rules={[{ required: true, message: 'Please input Flight Code!' }]}
               >
-                <Input placeholder="Flight Code" />
+                <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -143,7 +141,7 @@ function EditFlight(){
                 name="TypeID"
                 rules={[{ required: true, message: 'Please select Type!' }]}
               >
-                <Select placeholder="Select Type" allowClear>
+                <Select allowClear>
                   {types.map(type => (
                     <Option key={type.ID} value={type.ID}>
                       {type.TypeFlight}
@@ -161,7 +159,7 @@ function EditFlight(){
                 name="FlyingFromID"
                 rules={[{ required: true, message: 'Please select the departure airport!' }]}
               >
-                <Select placeholder="Select Flying From" allowClear>
+                <Select allowClear>
                   {airports.map(airport => (
                     <Option key={airport.ID} value={airport.ID}>
                       {airport.AirportCode}
@@ -176,7 +174,7 @@ function EditFlight(){
                 name="GoingToID"
                 rules={[{ required: true, message: 'Please select the destination airport!' }]}
               >
-                <Select placeholder="Select Going To" allowClear>
+                <Select allowClear>
                   {airports.map(airport => (
                     <Option key={airport.ID} value={airport.ID}>
                       {airport.AirportCode}
@@ -194,7 +192,7 @@ function EditFlight(){
                 name="ScheduleStart"
                 rules={[{ required: true, message: 'Please select Schedule Start!' }]}
               >
-                <DatePicker showTime placeholder="Select date and time" style={{ width: '100%' }} />
+                <DatePicker showTime style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -203,7 +201,7 @@ function EditFlight(){
                 name="ScheduleEnd"
                 rules={[{ required: true, message: 'Please select Schedule End!' }]}
               >
-                <DatePicker showTime placeholder="Select date and time" style={{ width: '100%' }} />
+                <DatePicker showTime style={{ width: '100%' }} />
               </Form.Item>
             </Col>
           </Row>
@@ -211,12 +209,12 @@ function EditFlight(){
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Hour" name="Hour" rules={[{ required: true, message: 'Please input Hour!' }]}>
-                <InputNumber placeholder="Hour" min={1} style={{ width: '100%' }} />
+                <InputNumber min={1} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="Airline" name="AirlineID" rules={[{ required: true, message: 'Please select Airline!' }]}>
-                <Select placeholder="Select Airline" allowClear>
+                <Select allowClear>
                   {airlines.map(airline => (
                     <Option key={airline.ID} value={airline.ID}>
                       {airline.AirlineName}
@@ -230,12 +228,12 @@ function EditFlight(){
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Cost" name="Cost" rules={[{ required: true, message: 'Please input Cost!' }]}>
-                <InputNumber placeholder="Cost" min={0} style={{ width: '100%' }} />
+                <InputNumber min={0} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="Point" name="Point" rules={[{ required: true, message: 'Please input Point!' }]}>
-                <InputNumber placeholder="Point" min={0} style={{ width: '100%' }} />
+                <InputNumber min={0} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
           </Row>

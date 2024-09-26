@@ -29,7 +29,6 @@ export interface FlightAndFlightDetailsInterface {
     FlightDetailID?: number;
     FlightDetail?: FlightDetailsInterface;
     AdminID?: number;
-    Admin?: AdminInterface;
 }
 
 // FlightDetails Interface
