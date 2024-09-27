@@ -10,7 +10,7 @@ import { FlightDetailsInterface, AirlineInterface, AirportInterface, TypeOfFligh
 
 const { Option } = Select;
 
-function EditFlight() {
+function EditFlight () {
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
 

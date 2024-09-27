@@ -20,11 +20,19 @@ const Login: React.FC = () => {
         email: values.email,
         password: values.password,
       });
-      localStorage.setItem('token', response.data.token);
+
+      const { token,role } = response.data;
+      localStorage.setItem('token', token);
       localStorage.setItem('token_type', 'Bearer');
 
       message.success('Login successful');
-      navigate('/flight');
+
+      if(role == 'admin'){
+        navigate('/flight');
+      } else {
+        navigate('/date-flight'); ///////////
+      }
+      
     } catch (error) {
       message.error('Login failed');
     } finally {

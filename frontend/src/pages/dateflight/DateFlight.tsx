@@ -10,7 +10,7 @@ import {GetFlightDetails,DeleteFlightDetails} from '../../services/https/index';
 import { FlightDetailsInterface} from '../../interfaces/fullmanageflight';
 import "./DateFlight.css";
 
-function FlightTable(){
+function DateFlight (){
   const [messageApi, contextHolder] = message.useMessage();
 
   const [flights, setFlights] = useState<FlightDetailsInterface[]>([]);
@@ -264,4 +264,4 @@ function FlightTable(){
   );
 };
 
-export default FlightTable;
+export default DateFlight;

@@ -41,7 +41,10 @@ func LoginByUsername(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{
+		"token": token,
+		"role":  admin.Role, ////////////
+	})
 }
 
 //signup
@@ -73,11 +76,8 @@ func RegisterAdmin(c *gin.Context) {
 	}
 
 	if userCheck.ID != 0 {
-
 		c.JSON(http.StatusConflict, gin.H{"error": "Email is already registered"})
-
 		return
-
 	}
 
 	hashedPassword, _ := entity.HashPassword(payload.Password)
@@ -87,14 +87,12 @@ func RegisterAdmin(c *gin.Context) {
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Birthday:  payload.Birthday,
+		Role:      "user",
 	}
 
 	if err := db.Create(&user).Error; err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
 	c.JSON(http.StatusCreated, gin.H{"message": "Sign-up successful"})
 

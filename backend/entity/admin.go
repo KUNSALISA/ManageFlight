@@ -13,6 +13,7 @@ type Admin struct {
 	FirstName string    `gorm:"not null" json:"first_name"`
 	LastName  string    `gorm:"not null" json:"last_name"`
 	Birthday  time.Time `gorm:"not null" json:"birthday"`
+	Role      string    `gorm:"not null" json:"role"`  //////////
 
 	Admin []FlightAndFlightDetails `gorm:"foreignKey:AdminID"`
 }

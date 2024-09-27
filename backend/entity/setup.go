@@ -36,15 +36,25 @@ func SetupDatabase() {
 	db = database
 
 	// สร้างข้อมูลผู้ใช้ (Admin)
-	hashedPassword, _ := HashPassword("admin")
+	hashedPasswordAdmin, _ := HashPassword("admin")
+	hashedPasswordUser, _ := HashPassword("user")
 	birthday, _ := time.Parse("2006-01-02", "2003-08-15")
 	admins := []Admin{
 		{
 			Email:     "Admin@gmail.com",
-			Password:  hashedPassword,
+			Password:  hashedPasswordAdmin,
 			FirstName: "Salisa",
 			LastName:  "Manage",
 			Birthday:  birthday,
+			Role:      "admin",
+		},
+		{
+			Email:     "Member@gmail.com",
+			Password:  hashedPasswordUser,
+			FirstName: "Member",
+			LastName:  "Buy",
+			Birthday:  birthday,
+			Role:      "ีuser",
 		},
 	}
 	for _, admin := range admins {
