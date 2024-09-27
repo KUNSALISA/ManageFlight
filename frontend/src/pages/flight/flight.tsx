@@ -12,7 +12,7 @@ import {FlightDetailsInterface,FlightAndFlightDetailsInterface} from '../../inte
 import {GetFlightAndFlightDetails} from '../../services/https/index';
 import "./flight.css";
 
-const FlightTable: React.FC = () => {
+const Flight: React.FC = () => {
   const [flight_s, setDate] = useState<FlightAndFlightDetailsInterface[]>([]);
   const [flightdetails, setFlight] = useState<FlightDetailsInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -87,9 +87,6 @@ const FlightTable: React.FC = () => {
         }
       };
       fetchData();
-      // GetFlightAndFlightDetails();
-      // const interval = setInterval(GetFlightAndFlightDetails, 2000); 
-      // return () => clearInterval(interval);
     }, []);
   
     
@@ -146,4 +143,4 @@ const FlightTable: React.FC = () => {
   );
 };
 
-export default FlightTable;
+export default Flight;
