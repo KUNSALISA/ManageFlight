@@ -20,45 +20,76 @@ function EditFlight() {
   const [airports, setAirports] = useState<AirportInterface[]>([]);
 
   let { id } = useParams();
+  console.log(id);
   const [form] = Form.useForm();
+  
+  // const onFinish = async (values: FlightDetailsInterface) => {
+  //   values.ID = flight?.ID;
+  //   console.log("Submitting form with values:", values);
+  //   let res = await UpdateFlightDetails(values);
+  //   if (res) {
+  //     messageApi.open({
+  //       type: "success",
+  //       content: "Flight updated successfully!",
+  //     });
+  //     setTimeout(() => {
+  //       navigate('/date-flight');
+  //     }, 2000);
+  //   } else {
+  //     messageApi.open({
+  //       type: "error",
+  //       content: "Failed to update flight.",
+  //     });
+  //   }
+  // };
 
   const onFinish = async (values: FlightDetailsInterface) => {
-    values.ID = flight?.ID;
-    let res = await UpdateFlightDetails(values);
-
+    values.ID = flight?.ID; // ใส่ ID ของ flight ใน object ที่จะส่งไปยัง backend
+    console.log("Submitting form with values:", values);
+  
+    let res = await UpdateFlightDetails(values); // เรียกใช้ฟังก์ชัน update
     if (res) {
-      messageApi.success("Flight updated successfully!");
+      messageApi.open({
+        type: "success",
+        content: "Flight updated successfully!",
+      });
       setTimeout(() => {
-        navigate('/date-flight');
+        navigate('/date-flight'); // นำทางไปยังหน้าอื่นเมื่อสำเร็จ
       }, 2000);
     } else {
-      messageApi.error("Failed to update flight.");
+      messageApi.open({
+        type: "error",
+        content: "Failed to update flight.",
+      });
     }
   };
+  
 
   const getAirline = async () => {
     let res = await GetAirline();
     if (res) {
-      setAirlines(res);  //setAirports(res.data);
+      setAirlines(res.data);  
     }
   };
 
   const getAirports = async () => {
     let res = await GetAirports();
+    console.log(res);
     if (res) {
-      setAirports(res);
+      setAirports(res.data);
     }
   };
 
   const getTypes = async () => {
     let res = await GetTypeOfFlight();
     if (res) {
-      setTypes(res);
+      setTypes(res.data);
     }
   };
 
   const getFlightById = async () => {
     let res = await GetFlightDetailsByID(Number(id));
+    console.log(res);
     if (res) {
       setFlight(res);
       form.setFieldsValue({
@@ -143,7 +174,7 @@ function EditFlight() {
               >
                 <Select allowClear>
                   {types.map(type => (
-                    <Option key={type.ID} value={type.ID}>
+                    <Option key={type.ID} value={type.TypeFlight}>
                       {type.TypeFlight}
                     </Option>
                   ))}
@@ -161,7 +192,7 @@ function EditFlight() {
               >
                 <Select allowClear>
                   {airports.map(airport => (
-                    <Option key={airport.ID} value={airport.ID}>
+                    <Option key={airport.ID} value={airport.AirportCode}>
                       {airport.AirportCode}
                     </Option>
                   ))}
@@ -176,7 +207,7 @@ function EditFlight() {
               >
                 <Select allowClear>
                   {airports.map(airport => (
-                    <Option key={airport.ID} value={airport.ID}>
+                    <Option key={airport.ID} value={airport.AirportCode}>
                       {airport.AirportCode}
                     </Option>
                   ))}
@@ -216,7 +247,7 @@ function EditFlight() {
               <Form.Item label="Airline" name="AirlineID" rules={[{ required: true, message: 'Please select Airline!' }]}>
                 <Select allowClear>
                   {airlines.map(airline => (
-                    <Option key={airline.ID} value={airline.ID}>
+                    <Option key={airline.ID} value={airline.AirlineName}>
                       {airline.AirlineName}
                     </Option>
                   ))}
@@ -248,9 +279,8 @@ function EditFlight() {
             </Form.Item>
           </Row>
         </Form>
-      </div>
+      </div> 
     </div>
   );
 };
-
 export default EditFlight;

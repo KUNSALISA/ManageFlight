@@ -81,6 +81,8 @@ async function UpdateFlightDetails(data: FlightDetailsInterface) {
   return res;
 }
 
+
+
 async function DeleteFlightDetails(id: Number | undefined) {
   const requestOptions = {
     method: "DELETE"
