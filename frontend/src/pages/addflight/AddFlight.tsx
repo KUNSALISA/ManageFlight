@@ -3,7 +3,6 @@ import { Form, Input, Button, DatePicker, Row, Col, Select, InputNumber, message
 import { useNavigate } from 'react-router-dom';
 import './AddFlight.css';
 import FFF from '../../assets/FFF.png'; 
-import PPP from '../../assets/PPP.jpg';
 import { PlusOutlined, DownOutlined  } from "@ant-design/icons";
 import { FlightDetailsInterface, AirlineInterface, AirportInterface, TypeOfFlightInterface } from '../../interfaces/fullmanageflight';
 import { GetAirline, GetTypeOfFlight, GetAirports, CreateFlightDetails } from '../../services/https/index'; 
