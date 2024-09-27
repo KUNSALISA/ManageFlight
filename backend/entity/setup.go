@@ -54,7 +54,7 @@ func SetupDatabase() {
 			FirstName: "Member",
 			LastName:  "Buy",
 			Birthday:  birthday,
-			Role:      "ีuser",
+			Role:      "user",
 		},
 	}
 	for _, admin := range admins {
