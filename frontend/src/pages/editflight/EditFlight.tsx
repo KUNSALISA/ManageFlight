@@ -22,31 +22,9 @@ function EditFlight() {
   let { id } = useParams();
   console.log(id);
   const [form] = Form.useForm();
-  
-  // const onFinish = async (values: FlightDetailsInterface) => {
-  //   values.ID = flight?.ID;
-  //   console.log("Submitting form with values:", values);
-  //   let res = await UpdateFlightDetails(values);
-  //   if (res) {
-  //     messageApi.open({
-  //       type: "success",
-  //       content: "Flight updated successfully!",
-  //     });
-  //     setTimeout(() => {
-  //       navigate('/date-flight');
-  //     }, 2000);
-  //   } else {
-  //     messageApi.open({
-  //       type: "error",
-  //       content: "Failed to update flight.",
-  //     });
-  //   }
-  // };
 
   const onFinish = async (values: FlightDetailsInterface) => {
     values.ID = flight?.ID; // ใส่ ID ของ flight ใน object ที่จะส่งไปยัง backend
-    console.log("Submitting form with values:", values);
-  
     let res = await UpdateFlightDetails(values); // เรียกใช้ฟังก์ชัน update
     if (res) {
       messageApi.open({
