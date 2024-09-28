@@ -75,50 +75,50 @@ func GetFlightAndFlightDetailsByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
 }
 
-// UpdateFlightAndFlightDetails
-func UpdateFlightAndFlightDetails(c *gin.Context) {
-	var flightAndFlightDetails entity.FlightAndFlightDetails
-	id := c.Param("id")
+// // UpdateFlightAndFlightDetails
+// func UpdateFlightAndFlightDetails(c *gin.Context) {
+// 	var flightAndFlightDetails entity.FlightAndFlightDetails
+// 	id := c.Param("id")
 
-	if err := entity.DB().First(&flightAndFlightDetails, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "FlightAndFlightDetails not found"})
-		return
-	}
+// 	if err := entity.DB().First(&flightAndFlightDetails, id).Error; err != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "FlightAndFlightDetails not found"})
+// 		return
+// 	}
 
-	if err := c.ShouldBindJSON(&flightAndFlightDetails); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := c.ShouldBindJSON(&flightAndFlightDetails); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	if flightAndFlightDetails.FlightDetailID == nil || flightAndFlightDetails.AdminID == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "FlightID, FlightDetailID, and AdminID are required"})
-		return
-	}
+// 	if flightAndFlightDetails.FlightDetailID == nil || flightAndFlightDetails.AdminID == nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "FlightID, FlightDetailID, and AdminID are required"})
+// 		return
+// 	}
 
-	flightAndFlightDetails.UpdatedAt = time.Now()
+// 	flightAndFlightDetails.UpdatedAt = time.Now()
 
-	if err := entity.DB().Save(&flightAndFlightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := entity.DB().Save(&flightAndFlightDetails).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
-}
+// 	c.JSON(http.StatusOK, gin.H{"data": flightAndFlightDetails})
+// }
 
-// DeleteFlightAndFlightDetails
-func DeleteFlightAndFlightDetails(c *gin.Context) {
-	var flightAndFlightDetails entity.FlightAndFlightDetails
-	id := c.Param("id")
+// // DeleteFlightAndFlightDetails
+// func DeleteFlightAndFlightDetails(c *gin.Context) {
+// 	var flightAndFlightDetails entity.FlightAndFlightDetails
+// 	id := c.Param("id")
 
-	if err := entity.DB().First(&flightAndFlightDetails, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "FlightAndFlightDetails not found"})
-		return
-	}
+// 	if err := entity.DB().First(&flightAndFlightDetails, id).Error; err != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "FlightAndFlightDetails not found"})
+// 		return
+// 	}
 
-	if err := entity.DB().Delete(&flightAndFlightDetails).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := entity.DB().Delete(&flightAndFlightDetails).Error; err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "FlightAndFlightDetails deleted successfully"})
-}
+// 	c.JSON(http.StatusOK, gin.H{"message": "FlightAndFlightDetails deleted successfully"})
+// }

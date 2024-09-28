@@ -12,7 +12,7 @@ const createRequestOptions = (method: string, data: any = null) => {
     throw new Error("No token or token type available");
   }
 
-  const headers = {
+  const headers = {  //แค่อันนี้ก็ได้
     "Content-Type": "application/json",
     Authorization: `${Bearer} ${Authorization}`,
   };
@@ -25,7 +25,7 @@ const createRequestOptions = (method: string, data: any = null) => {
 };
 
 async function SignUp(data: AdminInterface) {
-  let res = await fetch(`${apiUrl}/signup`, createRequestOptions("POST", data))
+  let res = await fetch(`${apiUrl}/signup`, createRequestOptions("POST", data))  //ส่งคำร้องขอไป API await คือรอก่อนจนกว่าจะทำงานเสร็จ
     .then(res => (res.status == 201 ? res.json() : false));
   
   return res;

@@ -78,7 +78,7 @@ const Flight: React.FC = () => {
       const fetchData = async () => {
         setLoading(true);
         try {
-          const response = await axios.get("http://localhost:8080/flight-and-flight-details");
+          const response = await axios.get("http://localhost:8080/flight-and-flight-details"); //
           setDate(response.data.data);
         } catch (error) {
           console.error("Error fetching flight details:", error);
@@ -118,7 +118,7 @@ const Flight: React.FC = () => {
           <Button className="flight-button" onClick={() => navigate('/date-flight')}>Flights</Button>
           <Button className="add-flight-button" onClick={() => navigate('/add-flight')}>Add flights</Button>
         </div>
-
+        <div>เที่ยวบินในแต่ละวัน </div>
         <div className="profile-section">
           <Dropdown overlay={menu}>
             <Button>
