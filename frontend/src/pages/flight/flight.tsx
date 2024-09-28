@@ -118,7 +118,7 @@ const Flight: React.FC = () => {
           <Button className="flight-button" onClick={() => navigate('/date-flight')}>Flights</Button>
           <Button className="add-flight-button" onClick={() => navigate('/add-flight')}>Add flights</Button>
         </div>
-        <div>เที่ยวบินในแต่ละวัน </div>
+        <div style={{ color: "white", fontSize: "24px",fontWeight: "bold"}}>เที่ยวบินในแต่ละวัน</div> 
         <div className="profile-section">
           <Dropdown overlay={menu}>
             <Button>

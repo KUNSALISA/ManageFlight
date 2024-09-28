@@ -91,6 +91,7 @@ const CreateFlight: React.FC = () =>{
               Home
             </Button>
           </div>
+          <div style={{ color: "white", fontSize: "24px",fontWeight: "bold"}}>เพิ่มเที่ยวบิน</div>
           <div className="profile-section-addf">
             <Dropdown overlay={menu}>
               <Button>

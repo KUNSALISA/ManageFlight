@@ -116,7 +116,7 @@ function EditFlight () {
             Home
           </Button>
         </div>
-
+        <div style={{ color: "white", fontSize: "24px",fontWeight: "bold"}}>แก้ไขข้อมูลเที่ยวบิน</div>
         <div className="profile-section-edit-flight">
           <Dropdown overlay={menu}>
             <Button>

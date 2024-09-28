@@ -198,6 +198,8 @@ function DateFlight (){
         </div>
         <Button className="home-button-addf-fd" shape="round" onClick={() => navigate("/flight")}>Home</Button>
 
+        <div style={{ color: "white", fontSize: "24px",fontWeight: "bold",marginRight:"-10%"}}>เพิ่มเที่ยวบินในวันที่ที่ต้องการ</div>
+      
         <div className="profile-section-addf-fd">
           <Dropdown overlay={menu}>
             <Button>
