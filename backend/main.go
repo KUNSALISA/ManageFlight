@@ -67,28 +67,6 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // func main() {
 
 // 	// open connection database
