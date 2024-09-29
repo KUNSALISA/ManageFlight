@@ -152,7 +152,7 @@ function EditFlight () {
               >
                 <Select allowClear>
                   {types.map(type => (
-                    <Option key={type.ID} value={type.TypeFlight}>
+                    <Option key={type.ID} value={type.ID}>
                       {type.TypeFlight}
                     </Option>
                   ))}
@@ -170,7 +170,7 @@ function EditFlight () {
               >
                 <Select allowClear>
                   {airports.map(airport => (
-                    <Option key={airport.ID} value={airport.AirportCode}>
+                    <Option key={airport.ID} value={airport.ID}>
                       {airport.AirportCode}
                     </Option>
                   ))}
@@ -185,7 +185,7 @@ function EditFlight () {
               >
                 <Select allowClear>
                   {airports.map(airport => (
-                    <Option key={airport.ID} value={airport.AirportCode}>
+                    <Option key={airport.ID} value={airport.ID}>
                       {airport.AirportCode}
                     </Option>
                   ))}
@@ -225,7 +225,7 @@ function EditFlight () {
               <Form.Item label="Airline" name="AirlineID" rules={[{ required: true, message: 'Please select Airline!' }]}>
                 <Select allowClear>
                   {airlines.map(airline => (
-                    <Option key={airline.ID} value={airline.AirlineName}>
+                    <Option key={airline.ID} value={airline.ID}>
                       {airline.AirlineName}
                     </Option>
                   ))}

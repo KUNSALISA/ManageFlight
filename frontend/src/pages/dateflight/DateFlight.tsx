@@ -235,7 +235,7 @@ function DateFlight (){
           }}
           columns={columns}
           dataSource={filteredFlights}
-          rowKey={(record) => record.ID}
+          //rowKey={(record) => record.ID}
           loading={loading}
           pagination={{ pageSize: 5 }}
         />
